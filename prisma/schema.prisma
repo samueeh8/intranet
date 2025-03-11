@@ -1,0 +1,177 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ArchivoAdministrativo {
+  ClavePrivada       Int     @id @default(autoincrement())
+  NumeroExpediente   String? @map("Número expediente")
+  PalabrasClave      String? @map("Palabras Clave")
+  Ubicacion          String?
+  NumeroCaja         Float?
+  FechaAutomatica    DateTime? @map("Fecha automática")
+  Notas             String?
+  FechaDocumentos    String?
+  Archivo           String?
+  Prestamo          String?
+  Contenido         String?
+  Promotor          String?
+  NumeroCliente     Int? @map("Nº Cliente")
+  Proyecto          String?
+}
+
+model Cartas {
+  NumeroRegistro    Int    @id @default(autoincrement())
+  Fecha            DateTime?
+  Empresa          String?
+  NumeroCliente    Int?
+  NumeroContrato   Int?
+  Destinatario     String?
+  NumeroExpediente String?
+  TipoDeSoporte    String?
+  ModoDeEnvio      String?
+  Departamento     String?
+  Remitente        String?
+  Asunto           String?
+  PDF              Bytes?
+}
+
+model Clientes {
+  Codigo           String @id @map("codigo")
+  Nombre           String?
+  NIF              String?
+  Direccion        String?
+  CodigoPostal     String?
+  Provincia        String?
+  Pais             String?
+  GrupoEmpresarial String?
+}
+
+model Proveedores {
+  Id              Int     @id @default(autoincrement())
+  Title           String?
+  Nombre          String?
+  SegundoNombre   String?
+  Apellidos       String?
+  Organizacion    String?
+  Puesto          String?
+  CalleTrabajo    String?
+  CiudadTrabajo   String?
+  ProvinciaTrabajo String?
+  PaisTrabajo     String?
+  Telefono1       String?
+  Telefono2       String?
+  TelefonoMovil   String?
+  Correo1         String?
+  Correo2         String?
+  Correo3         String?
+  Notas           String?
+  PaginaWeb       String?
+}
+
+model ConsultaArchivoTecnico {
+  ClavePrivada       Int     @id @default(autoincrement())
+  PalabrasClave      String?
+  Ubicacion          String?
+  NumeroCaja         Float?
+  FechaAutomatica    DateTime?
+  Notas             String?
+  FechaTransferencia DateTime?
+  NumeroExpediente   String?
+}
+
+model Proyectos {
+  NumeroExpediente   String @id
+  PalabrasClave      String?
+  Proyecto          String?
+  Arquitecto        String?
+  M2Construidos     Float?
+  TechoEdificable   Float?
+  M2Sotano          Float?
+  NumeroViviendas   Float?
+  FechaVisado       DateTime?
+  FechaInicio       DateTime?
+  NExpedienteColegio String?
+  Localidad        String?
+  Promotor         String?
+  NumeroCliente    Int?
+  TipoProyecto     String?
+  Categoria        String?
+  Uso             String?
+  Tramitacion     String?
+  Instancias      String?
+  RutaCarpeta      String?
+}
+
+model RegistroEjemplares {
+  Id             Int     @id @default(autoincrement())
+  Revistas       String?
+  Fecha          DateTime?
+  N_Ejemplar     Float?
+  ModeloEspecial Float?
+  NAtrasados     Float?
+}
+
+model RegistroFotos {
+  ClavePrivada       Int     @id @default(autoincrement())
+  Ubicacion          String?
+  NumeroExpediente   String?
+  PalabrasClave      String?
+  Contenido         String?
+  Proyecto          String?
+  Localidad        String?
+  FechaFotos       Float?
+  NumeroFoto       Float?
+  NumeroCaja       Float?
+  CreacionRegistro DateTime?
+  Carpeta          String?
+  Tamano           String?
+  Sobre           String?
+  NumeroCliente   Int?
+}
+
+model RegistroLibros {
+  Registro      Float @id
+  Titulo       String?
+  Autor        String?
+  Editorial    String?
+  AnioPublicacion Float?
+  Tomo         Float?
+  ISBN         String?
+  Ubicacion    String?
+  Materia      String?
+  CDU          Float?
+  Edicion      String?
+  Notas        String?
+  Signatura    String?
+  FechaAuto    DateTime?
+  NumeroCliente Int?
+}
+
+model RegistroRevista {
+  Id      Int     @id @default(autoincrement())
+  Revista String?
+}
+
+model Trabajadores {
+  Id              Int     @id @default(autoincrement())
+  Nombre          String?
+  Apellidos       String?
+  Direccion       String?
+  Telefono        String?
+  NSegSocial      String?
+  DNI             String?
+  NCuentaBancaria String?
+  Contrato        String?
+}
+
