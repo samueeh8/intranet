@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Proyecto [Nombre del Proyecto]
 
-## Getting Started
+## 📌 Descripción
+Este repositorio sigue un flujo de trabajo basado en ramas para garantizar estabilidad en la producción y permitir un desarrollo estructurado y controlado.
 
-First, run the development server:
+## 🌿 Flujo de trabajo de ramas
+El repositorio utiliza las siguientes ramas principales:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **`main`**: Es la rama de producción. Solo se actualiza cuando las funcionalidades han sido completamente desarrolladas y probadas.
+- **`develop`**: Es la rama de desarrollo y pruebas. Aquí se integran los cambios antes de ser promovidos a producción.
+- **Ramas de características (`feature/`)**: Se crean desde `develop` y son utilizadas para desarrollar nuevas funcionalidades o correcciones.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔄 Flujo de trabajo
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. **Crear una nueva rama de funcionalidad o corrección**
+   - Desde `develop`, se crea una nueva rama con el prefijo `feature/`, por ejemplo:
+     ```bash
+     git checkout develop
+     git pull origin develop
+     git checkout -b feature/nueva-funcionalidad
+     ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Realizar cambios y confirmarlos**
+   - Hacer cambios en la rama y confirmarlos con mensajes descriptivos:
+     ```bash
+     git add .
+     git commit -m "Descripción clara del cambio realizado"
+     ```
 
-## Learn More
+3. **Subir los cambios al repositorio**
+   - Si la rama es nueva y aún no existe en el repositorio remoto, es necesario subirla con:
+     ```bash
+     git push -u origin feature/nueva-funcionalidad
+     ```
+   - Si la rama ya existe en remoto y está vinculada (`tracking branch`), basta con:
+     ```bash
+     git push
+     ```
 
-To learn more about Next.js, take a look at the following resources:
+4. **Realizar un Pull Request (PR) a `develop`**
+   - Abrir un PR en GitHub desde la rama `feature/nueva-funcionalidad` hacia `develop`.
+   - Revisar el código, solicitar revisiones si es necesario y realizar los cambios requeridos.
+   - Una vez aprobado, fusionar la rama en `develop`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+5. **Pruebas y validación en `develop`**
+   - Se ejecutan pruebas y validaciones en la rama `develop`.
+   - Si todo funciona correctamente, se procede al despliegue en producción.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+6. **Fusionar `develop` en `main` y desplegar**
+   - Una vez validados los cambios en `develop`, se fusionan en `main` con:
+     ```bash
+     git checkout main
+     git pull origin main
+     git merge develop
+     git push origin main
+     ```
 
-## Deploy on Vercel
+7. **Eliminar ramas de características**
+   - Una vez fusionadas en `develop` y en `main`, se pueden eliminar las ramas innecesarias:
+     ```bash
+     git branch -d feature/nueva-funcionalidad
+     git push origin --delete feature/nueva-funcionalidad
+     ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📌 Reglas de buenas prácticas
+- Todo desarrollo debe realizarse en una rama `feature/`.
+- No se debe trabajar directamente en `develop` ni en `main`.
+- Todo código debe pasar una revisión antes de ser fusionado.
+- Se deben realizar pruebas antes de fusionar `develop` en `main`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠 Herramientas recomendadas
+- [Git](https://git-scm.com/)
+- [GitHub Desktop](https://desktop.github.com/)
+- [GitFlow](https://nvie.com/posts/a-successful-git-branching-model/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+
+---
+¡Happy coding! 🚀
