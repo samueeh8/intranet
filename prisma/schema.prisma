@@ -1,177 +1,237 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+generator client {
+  provider = "prisma-client-js"
+}
 
 datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
-model ArchivoAdministrativo {
-  ClavePrivada       Int     @id @default(autoincrement())
-  NumeroExpediente   String? @map("Número expediente")
-  PalabrasClave      String? @map("Palabras Clave")
-  Ubicacion          String?
-  NumeroCaja         Float?
-  FechaAutomatica    DateTime? @map("Fecha automática")
-  Notas             String?
-  FechaDocumentos    String?
-  Archivo           String?
-  Prestamo          String?
-  Contenido         String?
-  Promotor          String?
-  NumeroCliente     Int? @map("Nº Cliente")
-  Proyecto          String?
-}
-
 model Cartas {
-  NumeroRegistro    Int    @id @default(autoincrement())
-  Fecha            DateTime?
-  Empresa          String?
+  NumeroRegistro   Int       @id(map: "PK__Registro__1ECFFBAE3C9FD0A6") @default(autoincrement())
+  Fecha            DateTime? @db.Date
+  Empresa          String?   @db.NVarChar(Max)
   NumeroCliente    Int?
-  NumeroContrato   Int?
-  Destinatario     String?
-  NumeroExpediente String?
-  TipoDeSoporte    String?
-  ModoDeEnvio      String?
-  Departamento     String?
-  Remitente        String?
-  Asunto           String?
+  Destinatario     String?   @db.NVarChar(Max)
+  NumeroExpediente String?   @db.NVarChar(255)
+  TipoDeSoporte    String?   @db.NVarChar(Max)
+  ModoDeEnvio      String?   @db.NVarChar(Max)
+  Departamento     String?   @db.NVarChar(Max)
+  Remitente        String?   @db.NVarChar(Max)
+  Asunto           String?   @db.NVarChar(Max)
   PDF              Bytes?
 }
 
 model Clientes {
-  Codigo           String @id @map("codigo")
-  Nombre           String?
-  NIF              String?
-  Direccion        String?
-  CodigoPostal     String?
-  Provincia        String?
-  Pais             String?
-  GrupoEmpresarial String?
+  Codigo            String? @map("codigo") @db.VarChar(255)
+  nombre            String? @db.VarChar(255)
+  nif               String? @db.VarChar(255)
+  direccion         String? @db.VarChar(255)
+  codigo_postal     String? @map("codigo postal") @db.VarChar(255)
+  provincia         String? @db.VarChar(255)
+  pais              String? @db.VarChar(255)
+  grupo_empresarial String? @map("grupo empresarial") @db.VarChar(255)
+  id_cliente        Int     @id(map: "PK__Clientes__677F38F526384A97") @default(autoincrement())
 }
 
 model Proveedores {
-  Id              Int     @id @default(autoincrement())
-  Title           String?
-  Nombre          String?
-  SegundoNombre   String?
-  Apellidos       String?
-  Organizacion    String?
-  Puesto          String?
-  CalleTrabajo    String?
-  CiudadTrabajo   String?
-  ProvinciaTrabajo String?
-  PaisTrabajo     String?
-  Telefono1       String?
-  Telefono2       String?
-  TelefonoMovil   String?
-  Correo1         String?
-  Correo2         String?
-  Correo3         String?
-  Notas           String?
-  PaginaWeb       String?
-}
+  Id                                 Int     @id(map: "Contactos_definitivo$Id") @default(autoincrement())
+  Title                              String? @db.NVarChar(255)
+  Nombre                             String? @db.NVarChar(255)
+  Segundo_nombre                     String? @map("Segundo nombre") @db.NVarChar(255)
+  Apellidos                          String? @db.NVarChar(255)
+  Organizaci_n                       String? @map("Organización") @db.NVarChar(255)
+  Puesto                             String? @db.NVarChar(255)
+  Calle_del_trabajo                  String? @map("Calle del trabajo") @db.NVarChar(255)
+  Ciudad_de_trabajo                  String? @map("Ciudad de trabajo") @db.NVarChar(255)
+  Provincia_o_estado_de_trabajo      String? @map("Provincia o estado de trabajo") @db.NVarChar(255)
+  C_digo_postal_del_trabajo          String? @map("Código postal del trabajo") @db.NVarChar(255)
+  Pa_s_o_regi_n_del_trabajo          String? @map("País o región del trabajo") @db.NVarChar(255)
+  Otra_calle                         String? @map("Otra calle") @db.NVarChar(255)
+  Otra_ciudad                        String? @map("Otra ciudad") @db.NVarChar(255)
+  Otra_provincia_o_estado            String? @map("Otra provincia o estado") @db.NVarChar(255)
+  Otro_c_digo_postal                 String? @map("Otro código postal") @db.NVarChar(255)
+  Tel_fono_del_trabajo               String? @map("Teléfono del trabajo") @db.NVarChar(255)
+  Tel_fono_del_trabajo_2             String? @map("Teléfono del trabajo 2") @db.NVarChar(255)
+  Particular                         String? @db.NVarChar(255)
+  Tel_fono_movil                     String? @map("Teléfono movil") @db.NVarChar(255)
+  Otro_tel_fono                      String? @map("Otro teléfono") @db.NVarChar(255)
+  Categor_as                         String? @map("Categorías") @db.NVarChar(255)
+  Direcci_n_de_correo_electr_nico    String? @map("Dirección de correo electrónico") @db.NVarChar(255)
+  Direcci_n_de_correo_electr_nico_2  String? @map("Dirección de correo electrónico 2") @db.NVarChar(255)
+  Direcci_n_del_correo_electr_nico_3 String? @map("Dirección del correo electrónico 3") @db.NVarChar(255)
+  Notas                              String? @db.NVarChar(Max)
+  P_gina_web                         String? @map("Página web") @db.NVarChar(255)
 
-model ConsultaArchivoTecnico {
-  ClavePrivada       Int     @id @default(autoincrement())
-  PalabrasClave      String?
-  Ubicacion          String?
-  NumeroCaja         Float?
-  FechaAutomatica    DateTime?
-  Notas             String?
-  FechaTransferencia DateTime?
-  NumeroExpediente   String?
-}
-
-model Proyectos {
-  NumeroExpediente   String @id
-  PalabrasClave      String?
-  Proyecto          String?
-  Arquitecto        String?
-  M2Construidos     Float?
-  TechoEdificable   Float?
-  M2Sotano          Float?
-  NumeroViviendas   Float?
-  FechaVisado       DateTime?
-  FechaInicio       DateTime?
-  NExpedienteColegio String?
-  Localidad        String?
-  Promotor         String?
-  NumeroCliente    Int?
-  TipoProyecto     String?
-  Categoria        String?
-  Uso             String?
-  Tramitacion     String?
-  Instancias      String?
-  RutaCarpeta      String?
-}
-
-model RegistroEjemplares {
-  Id             Int     @id @default(autoincrement())
-  Revistas       String?
-  Fecha          DateTime?
-  N_Ejemplar     Float?
-  ModeloEspecial Float?
-  NAtrasados     Float?
-}
-
-model RegistroFotos {
-  ClavePrivada       Int     @id @default(autoincrement())
-  Ubicacion          String?
-  NumeroExpediente   String?
-  PalabrasClave      String?
-  Contenido         String?
-  Proyecto          String?
-  Localidad        String?
-  FechaFotos       Float?
-  NumeroFoto       Float?
-  NumeroCaja       Float?
-  CreacionRegistro DateTime?
-  Carpeta          String?
-  Tamano           String?
-  Sobre           String?
-  NumeroCliente   Int?
-}
-
-model RegistroLibros {
-  Registro      Float @id
-  Titulo       String?
-  Autor        String?
-  Editorial    String?
-  AnioPublicacion Float?
-  Tomo         Float?
-  ISBN         String?
-  Ubicacion    String?
-  Materia      String?
-  CDU          Float?
-  Edicion      String?
-  Notas        String?
-  Signatura    String?
-  FechaAuto    DateTime?
-  NumeroCliente Int?
-}
-
-model RegistroRevista {
-  Id      Int     @id @default(autoincrement())
-  Revista String?
+  @@index([C_digo_postal_del_trabajo], map: "Contactos_definitivo$Código postal del trabajo")
 }
 
 model Trabajadores {
   Id              Int     @id @default(autoincrement())
-  Nombre          String?
-  Apellidos       String?
-  Direccion       String?
-  Telefono        String?
-  NSegSocial      String?
-  DNI             String?
-  NCuentaBancaria String?
-  Contrato        String?
+  Nombre          String? @db.VarChar(255)
+  Apellidos       String? @db.VarChar(255)
+  Direccion       String? @db.VarChar(255)
+  Telefono        String? @db.VarChar(255)
+  NSegSocial      Int?
+  DNI             String? @db.Char(9)
+  NCuentaBancaria String? @db.VarChar(34)
+  Contrato        String? @db.VarChar(255)
 }
 
+model archivoAdministrativo {
+  Clave_Privada     Int       @id(map: "PK__registro__B01EC6D607C54408") @default(autoincrement()) @map("Clave Privada")
+  N_mero_expediente String?   @map("Número expediente") @db.NVarChar(255)
+  Palabras_Clave    String?   @map("Palabras Clave") @db.NVarChar(255)
+  Ubicaci_n         String?   @map("Ubicación") @db.NVarChar(255)
+  Numero_de_Caja    Float?    @map("Numero de Caja")
+  Fecha_autom_tica  DateTime? @map("Fecha automática")
+  Notas             String?   @db.NVarChar(255)
+  Fecha_documentos  String?   @map("Fecha documentos") @db.NVarChar(255)
+  Archivo           String?   @db.NVarChar(255)
+  Pr_stamo          String?   @map("Préstamo") @db.NVarChar(255)
+  Contenido         String?   @db.NVarChar(Max)
+  Promotor          String?   @db.NVarChar(255)
+  N__Cliente        Int?      @map("Nº Cliente")
+  proyecto          String?   @db.VarChar(255)
+}
+
+model Consulta_Archivo_T_cnico {
+  Clave_privada       Int       @id(map: "PK__Consulta__2D288E420FC37664") @default(autoincrement()) @map("Clave privada")
+  Palabras_clave      String?   @map("Palabras clave") @db.NVarChar(255)
+  Ubicaci_n           String?   @map("Ubicación") @db.NVarChar(255)
+  Numero_de_Caja      Float?    @map("Numero de Caja")
+  Fecha_autom_tica    DateTime? @map("Fecha automática")
+  Notas               String?   @db.NVarChar(255)
+  Fecha_transferencia String?   @map("Fecha transferencia") @db.NVarChar(255)
+  N__expediente       String?   @map("Nº expediente") @db.NVarChar(255)
+
+  @@map("Consulta Archivo Técnico")
+}
+
+model detalles {
+  codProyecto Int       @id @default(autoincrement())
+  detalle     String?   @db.VarChar(255)
+  fecha       DateTime? @db.Date
+  proyectos   proyectos @relation(fields: [codProyecto], references: [codProyecto], onUpdate: NoAction, map: "FK_detalles_proyectos")
+}
+
+model Gestion_horaria {
+  Id          Int       @id @default(autoincrement())
+  HoraEntrada DateTime? @db.Time
+  HoraSalida  DateTime? @db.Time
+
+  @@map("Gestion horaria")
+}
+
+model Parte_de_trabajo {
+  Id             Int       @id @default(autoincrement())
+  NombreProyecto String?   @db.VarChar(255)
+  fase           String?   @db.VarChar(255)
+  horas          Int?
+  descripcion    String?   @db.VarChar(255)
+  cliente        String?   @db.VarChar(255)
+  fecha          DateTime? @db.Date
+
+  @@map("Parte de trabajo")
+}
+
+model proyectos {
+  Numero_Expediente    String?    @map("Numero Expediente") @db.NVarChar(255)
+  Palabras_clave       String?    @map("Palabras clave") @db.NVarChar(255)
+  Proyecto             String?    @db.NVarChar(255)
+  Arquitecto           String?    @db.NVarChar(255)
+  m2_construidos_suelo Float?     @map("m2 construidos-suelo")
+  techo_edificable     Float?     @map("techo edificable")
+  m2_sotano            Float?     @map("m2 sotano")
+  numero_viviendas     Float?     @map("numero viviendas")
+  Fecha_Visado         String?    @map("Fecha Visado") @db.NVarChar(255)
+  Fecha_Inicio         String?    @map("Fecha Inicio") @db.NVarChar(255)
+  N_Expediente_Colegio String?    @map("N Expediente Colegio") @db.NVarChar(255)
+  Localidad            String?    @db.NVarChar(255)
+  Promotor             String?    @db.NVarChar(255)
+  N__Cliente           Int?       @map("Nº Cliente")
+  Tipo_de_proyecto     String?    @map("Tipo de proyecto") @db.NVarChar(255)
+  categoria            String?    @db.NVarChar(255)
+  uso                  String?    @db.VarChar(200)
+  situacion            String?    @db.VarChar(255)
+  Tramitacion          String?    @db.VarChar(100)
+  instancias           String?    @db.VarChar(50)
+  ruta_carpeta         String?    @map("ruta carpeta") @db.VarChar(255)
+  codProyecto          Int        @id(map: "PK__proyecto__0187B14F115B27B9") @default(autoincrement())
+  detalles             detalles[]
+}
+
+model registro_ejemplares {
+  id               Int               @id @default(autoincrement())
+  Revistas         String?           @db.NVarChar(255)
+  fecha            DateTime?
+  nEjemplar        Float?
+  modelo_especial  String?           @map("modelo especial") @db.NVarChar(255)
+  nAtrasados       String?           @db.NVarChar(255)
+  registro_revista registro_revista? @relation(fields: [id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK__registro eje__id__2F10007B")
+
+  @@map("registro ejemplares")
+}
+
+model registro_fotos {
+  Clave_Privada     Int       @id(map: "PK__registro__B01EC6D6DCA10FC0") @default(autoincrement()) @map("Clave Privada")
+  Ubicaci_n         String?   @map("Ubicación") @db.NVarChar(255)
+  N_mero_expediente String?   @map("Número expediente") @db.NVarChar(255)
+  Palabras_clave    String?   @map("Palabras clave") @db.NVarChar(255)
+  Contenido         String?   @db.NVarChar(255)
+  Proyecto          String?   @db.NVarChar(255)
+  Localidad         String?   @db.NVarChar(255)
+  Fecha_fotos       Float?    @map("Fecha fotos")
+  Numero_foto       Float?    @map("Numero foto")
+  Creaci_n_registro DateTime? @map("Creación registro")
+  Numero_caja       String?   @map("Numero caja") @db.NVarChar(255)
+  Carpeta           String?   @db.NVarChar(255)
+  Tama_o            String?   @map("Tamaño") @db.NVarChar(255)
+  Sobre             String?   @db.NVarChar(255)
+  N__Cliente        Int?      @map("Nº Cliente")
+
+  @@map("registro fotos")
+}
+
+model registro_libros {
+  Registro        Float    @id
+  Titulo          String?   @db.NVarChar(255)
+  Autor           String?   @db.NVarChar(255)
+  Editorial       String?   @db.NVarChar(255)
+  A_o_publicaci_n Float?    @map("Año publicación")
+  Tomo            String?   @db.NVarChar(255)
+  ISBN            String?   @db.NVarChar(255)
+  Ubicaci_n       String?   @map("Ubicación") @db.NVarChar(255)
+  Materia         String?   @db.NVarChar(255)
+  CDU             Float?
+  Edici_n         String?   @map("Edición") @db.NVarChar(255)
+  Notas           String?   @db.NVarChar(255)
+  Signatura       String?   @db.NVarChar(255)
+  Fecha_auto      DateTime? @map("Fecha auto")
+  N__Cliente      Int?      @map("Nº Cliente")
+
+  @@map("registro libros")
+}
+
+model registro_revista {
+  Id                  Int                   @id(map: "PK__registro__3214EC074B0BF452") @default(autoincrement())
+  Revista             String?               @db.NVarChar(255)
+  registro_ejemplares registro_ejemplares[]
+
+  @@map("registro revista")
+}
+
+model remitentes {
+  Id        Int     @id @default(autoincrement())
+  remitente String? @db.VarChar(100)
+}
+
+model sysdiagrams {
+  name         String @db.NVarChar(128)
+  principal_id Int
+  diagram_id   Int    @id(map: "PK__sysdiagr__C2B05B617ABAB7A6") @default(autoincrement())
+  version      Int?
+  definition   Bytes?
+
+  @@unique([principal_id, name], map: "UK_principal_name")
+}
