@@ -7,6 +7,23 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model archivoAdministrativo {
+  ID_Administrativo Int       @id(map: "PK__registro__B01EC6D607C54408") @default(autoincrement())
+  N_mero_expediente String?   @map("Número expediente") @db.NVarChar(255)
+  Palabras_Clave    String?   @map("Palabras Clave") @db.NVarChar(255)
+  Ubicaci_n         String?   @map("Ubicación") @db.NVarChar(255)
+  Numero_de_Caja    Float?    @map("Numero de Caja")
+  Fecha_autom_tica  DateTime? @map("Fecha automática")
+  Notas             String?   @db.NVarChar(255)
+  Fecha_documentos  String?   @map("Fecha documentos") @db.NVarChar(255)
+  Archivo           String?   @db.NVarChar(255)
+  Pr_stamo          String?   @map("Préstamo") @db.NVarChar(255)
+  Contenido         String?   @db.NVarChar(Max)
+  Promotor          String?   @db.NVarChar(255)
+  N__Cliente        Int?      @map("Nº Cliente")
+  proyecto          String?   @db.VarChar(255)
+}
+
 model Cartas {
   NumeroRegistro   Int       @id(map: "PK__Registro__1ECFFBAE3C9FD0A6") @default(autoincrement())
   Fecha            DateTime? @db.Date
@@ -23,7 +40,7 @@ model Cartas {
 }
 
 model Clientes {
-  Codigo            String? @map("codigo") @db.VarChar(255)
+  codigo            String? @db.VarChar(255)
   nombre            String? @db.VarChar(255)
   nif               String? @db.VarChar(255)
   direccion         String? @db.VarChar(255)
@@ -32,6 +49,51 @@ model Clientes {
   pais              String? @db.VarChar(255)
   grupo_empresarial String? @map("grupo empresarial") @db.VarChar(255)
   id_cliente        Int     @id(map: "PK__Clientes__677F38F526384A97") @default(autoincrement())
+}
+
+model Consulta_Archivo_T_cnico {
+  ID_Tecnico          Int       @id(map: "PK__Consulta__2D288E420FC37664") @default(autoincrement())
+  Palabras_clave      String?   @map("Palabras clave") @db.NVarChar(255)
+  Ubicaci_n           String?   @map("Ubicación") @db.NVarChar(255)
+  Numero_de_Caja      Float?    @map("Numero de Caja")
+  Fecha_autom_tica    DateTime? @map("Fecha automática")
+  Notas               String?   @db.NVarChar(255)
+  Fecha_transferencia String?   @map("Fecha transferencia") @db.NVarChar(255)
+  N__expediente       String?   @map("Nº expediente") @db.NVarChar(255)
+
+  @@map("Consulta Archivo Técnico")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model detalles {
+  detalle     String?   @db.VarChar(255)
+  fecha       DateTime? @db.Date
+  codProyecto Int       @id(map: "PK__detalles__0187B14F73F7FE9C") @default(autoincrement())
+  proyectos   proyectos @relation(fields: [codProyecto], references: [codProyecto], onUpdate: NoAction, map: "FK_detalles_proyectos")
+
+  
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Gestion_horaria {
+  HoraEntrada       DateTime? @db.Time
+  HoraSalida        DateTime? @db.Time
+  ID_GestionHoraria Int       @id(map: "PK__Gestion __9C6E237BCEEF4B4C") @default(autoincrement())
+
+  @@map("Gestion horaria")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Parte_de_trabajo {
+  NombreProyecto  String?   @db.VarChar(255)
+  fase            String?   @db.VarChar(255)
+  horas           Int?
+  descripcion     String?   @db.VarChar(255)
+  cliente         String?   @db.VarChar(255)
+  fecha           DateTime? @db.Date
+  ID_ParteTrabajo Int       @id(map: "PK__Parte de__7F8E7A1392CFF6C4") @default(autoincrement())
+
+  @@map("Parte de trabajo")
 }
 
 model Proveedores {
@@ -66,111 +128,46 @@ model Proveedores {
   @@index([C_digo_postal_del_trabajo], map: "Contactos_definitivo$Código postal del trabajo")
 }
 
-model Trabajadores {
-  Id              Int     @id @default(autoincrement())
-  Nombre          String? @db.VarChar(255)
-  Apellidos       String? @db.VarChar(255)
-  Direccion       String? @db.VarChar(255)
-  Telefono        String? @db.VarChar(255)
-  NSegSocial      Int?
-  DNI             String? @db.Char(9)
-  NCuentaBancaria String? @db.VarChar(34)
-  Contrato        String? @db.VarChar(255)
-}
-
-model archivoAdministrativo {
-  Clave_Privada     Int       @id(map: "PK__registro__B01EC6D607C54408") @default(autoincrement()) @map("Clave Privada")
-  N_mero_expediente String?   @map("Número expediente") @db.NVarChar(255)
-  Palabras_Clave    String?   @map("Palabras Clave") @db.NVarChar(255)
-  Ubicaci_n         String?   @map("Ubicación") @db.NVarChar(255)
-  Numero_de_Caja    Float?    @map("Numero de Caja")
-  Fecha_autom_tica  DateTime? @map("Fecha automática")
-  Notas             String?   @db.NVarChar(255)
-  Fecha_documentos  String?   @map("Fecha documentos") @db.NVarChar(255)
-  Archivo           String?   @db.NVarChar(255)
-  Pr_stamo          String?   @map("Préstamo") @db.NVarChar(255)
-  Contenido         String?   @db.NVarChar(Max)
-  Promotor          String?   @db.NVarChar(255)
-  N__Cliente        Int?      @map("Nº Cliente")
-  proyecto          String?   @db.VarChar(255)
-}
-
-model Consulta_Archivo_T_cnico {
-  Clave_privada       Int       @id(map: "PK__Consulta__2D288E420FC37664") @default(autoincrement()) @map("Clave privada")
-  Palabras_clave      String?   @map("Palabras clave") @db.NVarChar(255)
-  Ubicaci_n           String?   @map("Ubicación") @db.NVarChar(255)
-  Numero_de_Caja      Float?    @map("Numero de Caja")
-  Fecha_autom_tica    DateTime? @map("Fecha automática")
-  Notas               String?   @db.NVarChar(255)
-  Fecha_transferencia String?   @map("Fecha transferencia") @db.NVarChar(255)
-  N__expediente       String?   @map("Nº expediente") @db.NVarChar(255)
-
-  @@map("Consulta Archivo Técnico")
-}
-
-model detalles {
-  codProyecto Int       @id @default(autoincrement())
-  detalle     String?   @db.VarChar(255)
-  fecha       DateTime? @db.Date
-  proyectos   proyectos @relation(fields: [codProyecto], references: [codProyecto], onUpdate: NoAction, map: "FK_detalles_proyectos")
-}
-
-model Gestion_horaria {
-  Id          Int       @id @default(autoincrement())
-  HoraEntrada DateTime? @db.Time
-  HoraSalida  DateTime? @db.Time
-
-  @@map("Gestion horaria")
-}
-
-model Parte_de_trabajo {
-  Id             Int       @id @default(autoincrement())
-  NombreProyecto String?   @db.VarChar(255)
-  fase           String?   @db.VarChar(255)
-  horas          Int?
-  descripcion    String?   @db.VarChar(255)
-  cliente        String?   @db.VarChar(255)
-  fecha          DateTime? @db.Date
-
-  @@map("Parte de trabajo")
-}
-
 model proyectos {
-  Numero_Expediente    String?    @map("Numero Expediente") @db.NVarChar(255)
-  Palabras_clave       String?    @map("Palabras clave") @db.NVarChar(255)
-  Proyecto             String?    @db.NVarChar(255)
-  Arquitecto           String?    @db.NVarChar(255)
-  m2_construidos_suelo Float?     @map("m2 construidos-suelo")
-  techo_edificable     Float?     @map("techo edificable")
-  m2_sotano            Float?     @map("m2 sotano")
-  numero_viviendas     Float?     @map("numero viviendas")
-  Fecha_Visado         String?    @map("Fecha Visado") @db.NVarChar(255)
-  Fecha_Inicio         String?    @map("Fecha Inicio") @db.NVarChar(255)
-  N_Expediente_Colegio String?    @map("N Expediente Colegio") @db.NVarChar(255)
-  Localidad            String?    @db.NVarChar(255)
-  Promotor             String?    @db.NVarChar(255)
-  N__Cliente           Int?       @map("Nº Cliente")
-  Tipo_de_proyecto     String?    @map("Tipo de proyecto") @db.NVarChar(255)
-  categoria            String?    @db.NVarChar(255)
-  uso                  String?    @db.VarChar(200)
-  situacion            String?    @db.VarChar(255)
-  Tramitacion          String?    @db.VarChar(100)
-  instancias           String?    @db.VarChar(50)
-  ruta_carpeta         String?    @map("ruta carpeta") @db.VarChar(255)
-  codProyecto          Int        @id(map: "PK__proyecto__0187B14F115B27B9") @default(autoincrement())
-  detalles             detalles[]
+  Numero_Expediente    String?   @map("Numero Expediente") @db.NVarChar(255)
+  Palabras_clave       String?   @map("Palabras clave") @db.NVarChar(255)
+  Proyecto             String?   @db.NVarChar(255)
+  Arquitecto           String?   @db.NVarChar(255)
+  m2_construidos_suelo Float?    @map("m2 construidos-suelo")
+  techo_edificable     Float?    @map("techo edificable")
+  m2_sotano            Float?    @map("m2 sotano")
+  numero_viviendas     Float?    @map("numero viviendas")
+  Fecha_Visado         String?   @map("Fecha Visado") @db.NVarChar(255)
+  Fecha_Inicio         String?   @map("Fecha Inicio") @db.NVarChar(255)
+  N_Expediente_Colegio String?   @map("N Expediente Colegio") @db.NVarChar(255)
+  Localidad            String?   @db.NVarChar(255)
+  Promotor             String?   @db.NVarChar(255)
+  N__Cliente           Int?      @map("Nº Cliente")
+  Tipo_de_proyecto     String?   @map("Tipo de proyecto") @db.NVarChar(255)
+  categoria            String?   @db.NVarChar(255)
+  uso                  String?   @db.VarChar(200)
+  situacion            String?   @db.VarChar(255)
+  Tramitacion          String?   @db.VarChar(100)
+  instancias           String?   @db.VarChar(50)
+  ruta_carpeta         String?   @map("ruta carpeta") @db.VarChar(255)
+  codProyecto          Int       @id(map: "PK__proyecto__0187B14F115B27B9") @default(autoincrement())
+  id_cliente           Int?
+  detalles             detalles?
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model registro_ejemplares {
-  id               Int               @id @default(autoincrement())
-  Revistas         String?           @db.NVarChar(255)
-  fecha            DateTime?
-  nEjemplar        Float?
-  modelo_especial  String?           @map("modelo especial") @db.NVarChar(255)
-  nAtrasados       String?           @db.NVarChar(255)
-  registro_revista registro_revista? @relation(fields: [id], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK__registro eje__id__2F10007B")
+  ID_RegistroEjemplares Int?
+  Revistas              String?           @db.NVarChar(255)
+  fecha                 DateTime?
+  nEjemplar             Float?
+  modelo_especial       String?           @map("modelo especial") @db.NVarChar(255)
+  nAtrasados            String?           @db.NVarChar(255)
+  ID_ejemplar           Int               @id(map: "PK__registro__2AADA1BC87CBC4AE") @default(autoincrement())
+  registro_revista      registro_revista? @relation(fields: [ID_RegistroEjemplares], references: [ID_Revista], onDelete: NoAction, onUpdate: NoAction, map: "FK__registro eje__id__2F10007B")
 
   @@map("registro ejemplares")
+  
 }
 
 model registro_fotos {
@@ -193,8 +190,9 @@ model registro_fotos {
   @@map("registro fotos")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model registro_libros {
-  Registro        Float    @id
+  Registro        Float?
   Titulo          String?   @db.NVarChar(255)
   Autor           String?   @db.NVarChar(255)
   Editorial       String?   @db.NVarChar(255)
@@ -209,21 +207,23 @@ model registro_libros {
   Signatura       String?   @db.NVarChar(255)
   Fecha_auto      DateTime? @map("Fecha auto")
   N__Cliente      Int?      @map("Nº Cliente")
+  ID_Libro        Int       @id(map: "PK__registro__B1E7FA1076D8B626") @default(autoincrement())
 
   @@map("registro libros")
 }
 
 model registro_revista {
-  Id                  Int                   @id(map: "PK__registro__3214EC074B0BF452") @default(autoincrement())
+  ID_Revista          Int                   @id(map: "PK__registro__3214EC074B0BF452") @default(autoincrement())
   Revista             String?               @db.NVarChar(255)
   registro_ejemplares registro_ejemplares[]
 
   @@map("registro revista")
 }
 
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model remitentes {
-  Id        Int     @id @default(autoincrement())
-  remitente String? @db.VarChar(100)
+  remitente    String? @db.VarChar(100)
+  id_remitente Int     @id(map: "PK__remitent__18E36A5BC6D5504C") @default(autoincrement())
 }
 
 model sysdiagrams {
@@ -234,4 +234,16 @@ model sysdiagrams {
   definition   Bytes?
 
   @@unique([principal_id, name], map: "UK_principal_name")
+}
+
+model Trabajadores {
+  Nombre          String? @db.VarChar(255)
+  Apellidos       String? @db.VarChar(255)
+  Direccion       String? @db.VarChar(255)
+  Telefono        String? @db.VarChar(255)
+  NSegSocial      Int?
+  DNI             String? @db.Char(9)
+  NCuentaBancaria String? @db.VarChar(34)
+  Contrato        String? @db.VarChar(255)
+  id_trabajador   Int     @id(map: "PK__Trabajad__767D20B203D93012") @default(autoincrement())
 }
