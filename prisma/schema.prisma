@@ -40,15 +40,13 @@ model Cartas {
 }
 
 model Clientes {
-  codigo            String? @db.VarChar(255)
-  nombre            String? @db.VarChar(255)
-  nif               String? @db.VarChar(255)
-  direccion         String? @db.VarChar(255)
-  codigo_postal     String? @map("codigo postal") @db.VarChar(255)
-  provincia         String? @db.VarChar(255)
-  pais              String? @db.VarChar(255)
-  grupo_empresarial String? @map("grupo empresarial") @db.VarChar(255)
-  id_cliente        Int     @id(map: "PK__Clientes__677F38F526384A97") @default(autoincrement())
+  id_cliente    Int     @id(map: "Tabla1$PrimaryKey") @default(autoincrement())
+  Grupo_Cliente BigInt? @default(0, map: "DF__Tabla1__Grupo Cl__123EB7A3") @map("Grupo Cliente")
+  Id_Contable   BigInt? @default(0, map: "DF__Tabla1__Id_Conta__1332DBDC")
+  Nombre        String? @db.NVarChar(Max)
+  Nif           String? @db.NVarChar(100)
+
+  @@index([Id_Contable], map: "Tabla1$Id_Cliente")
 }
 
 model Consulta_Archivo_T_cnico {
@@ -73,15 +71,15 @@ model detalles {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model Factura {
-  Id_factura    Int       @default(autoincrement())
-  N__factura    String?   @map("Nº factura") @db.NVarChar(100)
-  Fecha         DateTime? @db.Date
-  Asunto        String?   @db.NVarChar(255)
-  Emplazamiento String?   @db.VarChar(100)
-  Id_cliente    Int?
-  Cif           String?   @db.NVarChar(9)
-  PDF           String?   @db.NVarChar(255)
-  detalles      String?   @db.NVarChar(255)
+  Id_factura      Int               @id(map: "PK__Factura__A6DB9362E5897CE8") @default(autoincrement())
+  N__factura      String?           @map("Nº factura") @db.NVarChar(100)
+  Fecha           DateTime?         @db.Date
+  Asunto          String?           @db.NVarChar(255)
+  Emplazamiento   String?           @db.VarChar(100)
+  Cif             String?           @db.NVarChar(9)
+  PDF             String?           @db.NVarChar(255)
+  detalles        String?           @db.NVarChar(255)
+  Factura_suplido Factura_suplido[] @ignore
 
   @@ignore
 }
@@ -139,33 +137,34 @@ model Proveedores {
 }
 
 model proyectos {
-  Numero_Expediente    String?   @map("Numero Expediente") @db.NVarChar(255)
-  Palabras_clave       String?   @map("Palabras clave") @db.NVarChar(255)
-  Proyecto             String?   @db.NVarChar(255)
-  Arquitecto           String?   @db.NVarChar(255)
-  m2_construidos_suelo Float?    @map("m2 construidos-suelo")
-  techo_edificable     Float?    @map("techo edificable")
-  m2_sotano            Float?    @map("m2 sotano")
-  numero_viviendas     Float?    @map("numero viviendas")
-  Fecha_Visado         String?   @map("Fecha Visado") @db.NVarChar(255)
-  Fecha_Inicio         String?   @map("Fecha Inicio") @db.NVarChar(255)
-  N_Expediente_Colegio String?   @map("N Expediente Colegio") @db.NVarChar(255)
-  Localidad            String?   @db.NVarChar(255)
-  Promotor             String?   @db.NVarChar(255)
-  N__Cliente           Int?      @map("Nº Cliente")
-  Tipo_de_proyecto     String?   @map("Tipo de proyecto") @db.NVarChar(255)
-  categoria            String?   @db.NVarChar(255)
-  uso                  String?   @db.VarChar(200)
-  situacion            String?   @db.VarChar(255)
-  Tramitacion          String?   @db.VarChar(100)
-  instancias           String?   @db.VarChar(50)
-  ruta_carpeta         String?   @map("ruta carpeta") @db.VarChar(255)
-  codProyecto          Int       @id(map: "PK__proyecto__0187B14F115B27B9") @default(autoincrement())
+  Numero_Expediente    String?           @map("Numero Expediente") @db.NVarChar(255)
+  Palabras_clave       String?           @map("Palabras clave") @db.NVarChar(255)
+  Proyecto             String?           @db.NVarChar(255)
+  Arquitecto           String?           @db.NVarChar(255)
+  m2_construidos_suelo Float?            @map("m2 construidos-suelo")
+  techo_edificable     Float?            @map("techo edificable")
+  m2_sotano            Float?            @map("m2 sotano")
+  numero_viviendas     Float?            @map("numero viviendas")
+  Fecha_Visado         String?           @map("Fecha Visado") @db.NVarChar(255)
+  Fecha_Inicio         String?           @map("Fecha Inicio") @db.NVarChar(255)
+  N_Expediente_Colegio String?           @map("N Expediente Colegio") @db.NVarChar(255)
+  Localidad            String?           @db.NVarChar(255)
+  Promotor             String?           @db.NVarChar(255)
+  N__Cliente           Int?              @map("Nº Cliente")
+  Tipo_de_proyecto     String?           @map("Tipo de proyecto") @db.NVarChar(255)
+  categoria            String?           @db.NVarChar(255)
+  uso                  String?           @db.VarChar(200)
+  situacion            String?           @db.VarChar(255)
+  Tramitacion          String?           @db.VarChar(100)
+  instancias           String?           @db.VarChar(50)
+  ruta_carpeta         String?           @map("ruta carpeta") @db.VarChar(255)
+  codProyecto          Int               @id(map: "PK__proyecto__0187B14F115B27B9") @default(autoincrement())
   id_cliente           Int?
   pasillo              Int?
   columna              Int?
   valda                Int?
   detalles             detalles?
+  Factura_suplido      Factura_suplido[] @ignore
 }
 
 model registro_ejemplares {
@@ -264,5 +263,16 @@ model Usuario {
   role          String?      @default("trabajador", map: "DF__Usuario__role__778AC167") @db.NVarChar(50)
   createdAt     DateTime?    @default(now(), map: "DF__Usuario__created__787EE5A0") @db.DateTime
   id_trabajador Int?
+  password_hash String?      @db.NVarChar(255)
   Trabajadores  Trabajadores @relation(fields: [email], references: [email], onUpdate: NoAction, map: "FK_Usuario_Trabajadores")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Factura_suplido {
+  codProyecto Int?
+  id_factura  Int?
+  proyectos   proyectos? @relation(fields: [codProyecto], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__Factura_s__codPr__0E6E26BF")
+  Factura     Factura?   @relation(fields: [id_factura], references: [Id_factura], onDelete: NoAction, onUpdate: NoAction, map: "FK__Factura_s__id_fa__0F624AF8")
+
+  @@ignore
 }
