@@ -5,7 +5,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import styles from "./page.module.recuperar-contrasena.css";
+import "./page.module.recuperar-contrasena.css";
 
 export default function RecuperarContrasena() {
   const router = useRouter();
@@ -59,7 +59,7 @@ export default function RecuperarContrasena() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message);
 
-      setMessage("Código verificado. Ahora puedes establecer una nueva contraseña.");
+      setMessage("Código verificado. Establece una nueva contraseña.");
       setStep(3);
     } catch (err) {
       setError(err.message || "Código incorrecto");
@@ -71,6 +71,8 @@ export default function RecuperarContrasena() {
   const handleSetNewPassword = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
+      setError("");
+      setMessage("");
       setError("Las contraseñas no coinciden");
       return;
     }

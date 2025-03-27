@@ -1,13 +1,15 @@
 .container {
-  max-width: 400px;
+  max-width: 500px;
   margin: 3rem auto;
   padding: 1rem;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  place-items: center;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 2rem;
+  margin: 1rem 0 2rem 0;
 }
 
 .form {
@@ -15,6 +17,7 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  width: 70%;
   gap: 2rem;
 }
 
@@ -34,7 +37,7 @@
   border: 1px solid #9e2d2d;
   border-radius: 4px;
   width: 50%;
-  margin-top: 10px;
+  margin: 0 0 1rem 0;
   cursor: pointer;
   transition: ease 0.2s;
 }
@@ -62,17 +65,18 @@
 
 .linkWrapper {
   text-align: center;
-  margin-top: -0.75rem;
-  font-size: 15px;
+  margin: -0.75rem 0 1rem 0;
 }
 
 .link {
-  color: #ffffff;
+  color: black;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: 0.4s ease;
+  display: inline-block;
 }
 
 .link:hover {
-  color: #ffd0d0;
-  transition: color 0.2s;
+  color: #9e2d2d;
+  transition: 0.2s ease;
+  transform: scale(1.03);
 }
