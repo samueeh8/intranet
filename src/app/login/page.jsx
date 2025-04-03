@@ -20,13 +20,13 @@ export default function LoginPage() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // const router = useRouter();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   if (session) {
-  //     router.push("/welcome");
-  //   }
-  // }, [session, router]);
+  useEffect(() => {
+    if (session) {
+      router.push("/welcome");
+    }
+  }, [session, router]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -81,22 +81,8 @@ export default function LoginPage() {
     }
   };
 
-  if (status === "loading") {
-    return <div className={styles.centerText}><p>Cargando...</p></div>;
-  }
-
-  // if (session) {
-  //   return (
-  //     <div className={styles.centerText}>
-  //       <h1>Bienvenido a la Intranet</h1>
-  //       <p>
-  //         Hola, {session.user.nombre} ({session.user.role})
-  //       </p>
-  //       <button className={styles.logoutButton} onClick={() => signOut()}>
-  //         Cerrar sesión
-  //       </button>
-  //     </div>
-  //   );
+  // if (status === "loading") {
+  //   return <div className={styles.centerText}><p>Cargando...</p></div>;
   // }
 
   return (

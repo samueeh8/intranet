@@ -2,15 +2,22 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../auth/[...nextauth]/route';
 import { PrismaClient } from '@prisma/client';
+import { checkPermission } from "@/lib/check-permissions";
 
 const prisma = new PrismaClient();
 
 export async function GET(req) {
   const session = await getServerSession(authOptions);
+  const role = session?.user?.role;
 
-  // Verificar que el usuario esté logueado y tenga rol administrador
-  if (!session || session.user.role !== 'admin') {
-    return NextResponse.json({ message: 'No autorizado' }, { status: 403 });
+  const hasPermission = checkPermission({
+    role,
+    resource: "usuarios",
+    action: "read",
+  });
+
+  if (!hasPermission) {
+    return NextResponse.json({ message: "No autorizado" }, { status: 403 });
   }
 
   try {
@@ -27,9 +34,8 @@ export async function GET(req) {
       });
       
 
-    // Limpiar y estructurar la respuesta
     const response = usuarios
-    .filter((u) => u.Roles?.nombre !== 'admin') // 👈 aquí filtramos
+    .filter((u) => u.Roles?.nombre !== 'admin') 
     .map((u) => ({
     email: u.email,
     nombre: u.Trabajadores? `${u.Trabajadores.Nombre} ${u.Trabajadores.Apellidos}`.trim() : 'Sin nombre',

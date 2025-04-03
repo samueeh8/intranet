@@ -40,14 +40,12 @@ model Cartas {
 }
 
 model Clientes {
-  id_cliente    Int         @id(map: "Tabla1$PrimaryKey") @default(autoincrement())
-  Grupo_Cliente BigInt?     @default(0, map: "DF__Tabla1__Grupo Cl__123EB7A3") @map("Grupo Cliente")
-  Id_Contable   BigInt?     @default(0, map: "DF__Tabla1__Id_Conta__1332DBDC")
-  Nombre        String?     @db.NVarChar(Max)
-  Nif           String?     @db.NVarChar(100)
-  proyectos     proyectos[]
-
-  @@index([Id_Contable], map: "Tabla1$Id_Cliente")
+  Grupo      String?     @db.NVarChar(255)
+  Codigo     String?     @db.NVarChar(255)
+  Nombre     String?     @db.NVarChar(255)
+  Nif        String?     @db.NVarChar(255)
+  id_cliente Int         @id(map: "PK__Clientes__677F38F5B040C534") @default(autoincrement())
+  proyectos  proyectos[]
 }
 
 model Consulta_Archivo_T_cnico {
@@ -138,35 +136,38 @@ model Proveedores {
 }
 
 model proyectos {
-  Numero_Expediente    String?           @map("Numero Expediente") @db.NVarChar(255)
-  Palabras_clave       String?           @map("Palabras clave") @db.NVarChar(255)
-  Proyecto             String?           @db.NVarChar(255)
-  Arquitecto           String?           @db.NVarChar(255)
-  m2_construidos_suelo String?           @map("m2 construidos-suelo") @db.NVarChar(255)
-  techo_edificable     String?           @map("techo edificable") @db.NVarChar(255)
-  m2_sotano            String?           @map("m2 sotano") @db.NVarChar(255)
-  numero_viviendas     Float?            @map("numero viviendas")
-  Fecha_Visado         String?           @map("Fecha Visado") @db.NVarChar(255)
-  Fecha_Inicio         String?           @map("Fecha Inicio") @db.NVarChar(255)
-  N_Expediente_Colegio String?           @map("N Expediente Colegio") @db.NVarChar(255)
-  Localidad            String?           @db.NVarChar(255)
-  Promotor             String?           @db.NVarChar(255)
-  N__Cliente           Int?              @map("Nº Cliente")
-  Tipo_de_proyecto     String?           @map("Tipo de proyecto") @db.NVarChar(255)
-  categoria            String?           @db.NVarChar(255)
-  uso                  String?           @db.VarChar(200)
-  situacion            String?           @db.NVarChar(255)
-  Tramitacion          String?           @db.VarChar(100)
-  instancias           String?           @db.VarChar(50)
-  ruta_carpeta         String?           @map("ruta carpeta") @db.VarChar(255)
+  Numero_Expediente    String?            @map("Numero Expediente") @db.NVarChar(255)
+  Palabras_clave       String?            @map("Palabras clave") @db.NVarChar(255)
+  Proyecto             String?            @db.NVarChar(255)
+  Arquitecto           String?            @db.NVarChar(255)
+  m2_construidos_suelo String?            @map("m2 construidos-suelo") @db.NVarChar(255)
+  techo_edificable     String?            @map("techo edificable") @db.NVarChar(255)
+  m2_sotano            String?            @map("m2 sotano") @db.NVarChar(255)
+  numero_viviendas     Float?             @map("numero viviendas")
+  Fecha_Visado         String?            @map("Fecha Visado") @db.NVarChar(255)
+  Fecha_Inicio         String?            @map("Fecha Inicio") @db.NVarChar(255)
+  N_Expediente_Colegio String?            @map("N Expediente Colegio") @db.NVarChar(255)
+  Localidad            String?            @db.NVarChar(255)
+  Promotor             String?            @db.NVarChar(255)
+  N__Cliente           Int?               @map("Nº Cliente")
+  Tipo_de_proyecto     String?            @map("Tipo de proyecto") @db.NVarChar(255)
+  categoria            String?            @db.NVarChar(255)
+  uso                  String?            @db.VarChar(200)
+  situacion            String?            @db.NVarChar(255)
+  Tramitacion          String?            @db.VarChar(100)
+  instancias           String?            @db.VarChar(50)
+  ruta_carpeta         String?            @map("ruta carpeta") @db.VarChar(255)
   id_cliente           Int?
   pasillo              Int?
   columna              Int?
   valda                Int?
-  codProyecto          Int               @id(map: "PK__proyecto__0187B14FCD9A716A") @default(autoincrement())
+  ParteLetras          String?            @db.NVarChar(255)
+  codProyecto          Int                @id(map: "PK__proyecto__0187B14F9C38CC5F") @default(autoincrement())
   detalles             detalles?
-  Factura_suplido      Factura_suplido[] @ignore
-  Clientes             Clientes?         @relation(fields: [id_cliente], references: [id_cliente], onDelete: NoAction, onUpdate: NoAction, map: "FK__proyectos__id_cl__2645B050")
+  Factura_suplido      Factura_suplido[]  @ignore
+  Clientes             Clientes?          @relation(fields: [id_cliente], references: [id_cliente], onDelete: NoAction, onUpdate: NoAction, map: "FK__proyectos__id_cl__2645B050")
+  PRY_edificacion      PRY_edificacion[]
+  PRY_planeamiento     PRY_planeamiento[]
 }
 
 model registro_ejemplares {
@@ -341,4 +342,36 @@ model Roles {
   nombre      String    @unique(map: "UQ__Roles__72AFBCC68B06F803") @db.NVarChar(50)
   descripcion String?   @db.NVarChar(255)
   Usuario     Usuario[]
+}
+
+model Clientes_antiguo {
+  id_cliente    Int     @id(map: "Tabla1$PrimaryKey") @default(autoincrement())
+  Grupo_Cliente BigInt? @default(0, map: "DF__Tabla1__Grupo Cl__123EB7A3") @map("Grupo Cliente")
+  Id_Contable   BigInt? @default(0, map: "DF__Tabla1__Id_Conta__1332DBDC")
+  Nombre        String? @db.NVarChar(Max)
+  Nif           String? @db.NVarChar(100)
+
+  @@index([Id_Contable], map: "Tabla1$Id_Cliente")
+}
+
+model grupos {
+  Id     Int     @id(map: "grupos$PrimaryKey") @default(autoincrement())
+  Campo1 Int?    @default(0, map: "DF__grupos__Campo1__3493CFA7")
+  Campo2 String? @db.NVarChar(255)
+}
+
+model PRY_edificacion {
+  id_edif          Int        @id(map: "PK__PRY_edif__FB2CD8941E36A11A") @default(autoincrement())
+  parteLetras      String?    @db.VarChar(50)
+  PRY_id           Int?
+  numeroExpediente String?    @db.NVarChar(50)
+  proyectos        proyectos? @relation(fields: [PRY_id], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_edifi__PRY_i__30C33EC3")
+}
+
+model PRY_planeamiento {
+  id_plan         Int        @id(map: "PK__planeami__3901EAE3F5B3EA3B") @default(autoincrement())
+  parteLetras     String?    @db.VarChar(50)
+  PRY_id          Int?
+  numeroExpediete String?    @db.NVarChar(50)
+  proyectos       proyectos? @relation(fields: [PRY_id], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_plane__PRY_i__395884C4")
 }
