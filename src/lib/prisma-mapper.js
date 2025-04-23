@@ -1,9 +1,11 @@
 export const campoPrisma = {
     proyectos: {
       numero_expediente:    { campo: "Numero_Expediente", tipo: "string" },
+      palabras_clave:       { campo: "Palabras_clave", tipo: "string" },
       promotor:             { campo: "Promotor", tipo: "string" },
       proyecto:             { campo: "Proyecto", tipo: "string" },
       fecha_inicio:         { campo: "Fecha_Inicio", tipo: "string" },
+      detalles:             { campo: "detalles", tipo: "string" },
     },
     cartas: {
       numero_expediente:    { campo: "NumeroExpediente", tipo: "string" },

@@ -40,23 +40,28 @@ model Cartas {
 }
 
 model Clientes {
-  Grupo      String?     @db.NVarChar(255)
-  Codigo     String?     @db.NVarChar(255)
-  Nombre     String?     @db.NVarChar(255)
-  Nif        String?     @db.NVarChar(255)
-  id_cliente Int         @id(map: "PK__Clientes__677F38F5B040C534") @default(autoincrement())
-  proyectos  proyectos[]
+  Grupo         Int?
+  Codigo        String?        @db.NVarChar(255)
+  Nombre        String?        @db.NVarChar(255)
+  Nif           String?        @db.NVarChar(255)
+  id_cliente    Int            @id(map: "PK__Clientes__677F38F5B040C534") @default(autoincrement())
+  domicilio     String?        @db.VarChar(100)
+  id_part       Int?
+  grupo_emp     grupo_emp?     @relation(fields: [Grupo], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK__Clientes__Grupo__373B3228")
+  Participantes Participantes? @relation(fields: [id_part], references: [ID_Participantes], onDelete: NoAction, onUpdate: NoAction, map: "FK__Clientes__id_par__3DE82FB7")
+  proyectos     proyectos[]
 }
 
 model Consulta_Archivo_T_cnico {
-  ID_Tecnico          Int       @id(map: "PK__Consulta__2D288E420FC37664") @default(autoincrement())
-  Palabras_clave      String?   @map("Palabras clave") @db.NVarChar(255)
-  Ubicaci_n           String?   @map("Ubicación") @db.NVarChar(255)
-  Numero_de_Caja      Float?    @map("Numero de Caja")
-  Fecha_autom_tica    DateTime? @map("Fecha automática")
-  Notas               String?   @db.NVarChar(255)
-  Fecha_transferencia String?   @map("Fecha transferencia") @db.NVarChar(255)
-  N__expediente       String?   @map("Nº expediente") @db.NVarChar(255)
+  ID_Tecnico          Int             @id(map: "PK__Consulta__2D288E420FC37664") @default(autoincrement())
+  Palabras_clave      String?         @map("Palabras clave") @db.NVarChar(255)
+  Ubicaci_n           String?         @map("Ubicación") @db.NVarChar(255)
+  Numero_de_Caja      Float?          @map("Numero de Caja")
+  Fecha_autom_tica    DateTime?       @map("Fecha automática")
+  Notas               String?         @db.NVarChar(255)
+  Fecha_transferencia String?         @map("Fecha transferencia") @db.NVarChar(255)
+  N__expediente       String?         @map("Nº expediente") @db.NVarChar(255)
+  archv_tec_pry       archv_tec_pry[] @ignore
 
   @@map("Consulta Archivo Técnico")
 }
@@ -84,53 +89,60 @@ model Factura {
 }
 
 model Gestion_horaria {
-  HoraEntrada       DateTime? @db.Time
-  HoraSalida        DateTime? @db.Time
-  ID_GestionHoraria Int       @id(map: "PK__Gestion __9C6E237BCEEF4B4C") @default(autoincrement())
+  HoraEntrada       DateTime?     @db.Time
+  HoraSalida        DateTime?     @db.Time
+  ID_GestionHoraria Int           @id(map: "PK__Gestion __9C6E237BCEEF4B4C") @default(autoincrement())
+  email_trabajador  String?       @db.NVarChar(255)
+  Trabajadores      Trabajadores? @relation(fields: [email_trabajador], references: [email], onDelete: NoAction, onUpdate: NoAction, map: "FK__Gestion h__email__3A179ED3")
 
   @@map("Gestion horaria")
 }
 
 model Parte_de_trabajo {
-  NombreProyecto  String?   @db.VarChar(255)
-  fase            String?   @db.VarChar(255)
-  horas           Int?
-  descripcion     String?   @db.VarChar(255)
-  cliente         String?   @db.VarChar(255)
-  fecha           DateTime? @db.Date
-  ID_ParteTrabajo Int       @id(map: "PK__Parte de__7F8E7A1392CFF6C4") @default(autoincrement())
+  NombreProyecto   String?       @db.VarChar(255)
+  fase             String?       @db.VarChar(255)
+  horas            Int?
+  descripcion      String?       @db.VarChar(255)
+  cliente          String?       @db.VarChar(255)
+  fecha            DateTime?     @db.Date
+  ID_ParteTrabajo  Int           @id(map: "PK__Parte de__7F8E7A1392CFF6C4") @default(autoincrement())
+  email_trabajador String?       @db.NVarChar(255)
+  Trabajadores     Trabajadores? @relation(fields: [email_trabajador], references: [email], onDelete: NoAction, onUpdate: NoAction, map: "FK__Parte de __email__4959E263")
 
   @@map("Parte de trabajo")
 }
 
 model Proveedores {
-  Id                                 Int     @id(map: "Contactos_definitivo$Id") @default(autoincrement())
-  Title                              String? @db.NVarChar(255)
-  Nombre                             String? @db.NVarChar(255)
-  Segundo_nombre                     String? @map("Segundo nombre") @db.NVarChar(255)
-  Apellidos                          String? @db.NVarChar(255)
-  Organizaci_n                       String? @map("Organización") @db.NVarChar(255)
-  Puesto                             String? @db.NVarChar(255)
-  Calle_del_trabajo                  String? @map("Calle del trabajo") @db.NVarChar(255)
-  Ciudad_de_trabajo                  String? @map("Ciudad de trabajo") @db.NVarChar(255)
-  Provincia_o_estado_de_trabajo      String? @map("Provincia o estado de trabajo") @db.NVarChar(255)
-  C_digo_postal_del_trabajo          String? @map("Código postal del trabajo") @db.NVarChar(255)
-  Pa_s_o_regi_n_del_trabajo          String? @map("País o región del trabajo") @db.NVarChar(255)
-  Otra_calle                         String? @map("Otra calle") @db.NVarChar(255)
-  Otra_ciudad                        String? @map("Otra ciudad") @db.NVarChar(255)
-  Otra_provincia_o_estado            String? @map("Otra provincia o estado") @db.NVarChar(255)
-  Otro_c_digo_postal                 String? @map("Otro código postal") @db.NVarChar(255)
-  Tel_fono_del_trabajo               String? @map("Teléfono del trabajo") @db.NVarChar(255)
-  Tel_fono_del_trabajo_2             String? @map("Teléfono del trabajo 2") @db.NVarChar(255)
-  Particular                         String? @db.NVarChar(255)
-  Tel_fono_movil                     String? @map("Teléfono movil") @db.NVarChar(255)
-  Otro_tel_fono                      String? @map("Otro teléfono") @db.NVarChar(255)
-  Categor_as                         String? @map("Categorías") @db.NVarChar(255)
-  Direcci_n_de_correo_electr_nico    String? @map("Dirección de correo electrónico") @db.NVarChar(255)
-  Direcci_n_de_correo_electr_nico_2  String? @map("Dirección de correo electrónico 2") @db.NVarChar(255)
-  Direcci_n_del_correo_electr_nico_3 String? @map("Dirección del correo electrónico 3") @db.NVarChar(255)
-  Notas                              String? @db.NVarChar(Max)
-  P_gina_web                         String? @map("Página web") @db.NVarChar(255)
+  Id                                 Int             @id(map: "Contactos_definitivo$Id") @default(autoincrement())
+  Title                              String?         @db.NVarChar(255)
+  Nombre                             String?         @db.NVarChar(255)
+  Segundo_nombre                     String?         @map("Segundo nombre") @db.NVarChar(255)
+  Apellidos                          String?         @db.NVarChar(255)
+  Organizaci_n                       String?         @map("Organización") @db.NVarChar(255)
+  Puesto                             String?         @db.NVarChar(255)
+  Calle_del_trabajo                  String?         @map("Calle del trabajo") @db.NVarChar(255)
+  Ciudad_de_trabajo                  String?         @map("Ciudad de trabajo") @db.NVarChar(255)
+  Provincia_o_estado_de_trabajo      String?         @map("Provincia o estado de trabajo") @db.NVarChar(255)
+  C_digo_postal_del_trabajo          String?         @map("Código postal del trabajo") @db.NVarChar(255)
+  Pa_s_o_regi_n_del_trabajo          String?         @map("País o región del trabajo") @db.NVarChar(255)
+  Otra_calle                         String?         @map("Otra calle") @db.NVarChar(255)
+  Otra_ciudad                        String?         @map("Otra ciudad") @db.NVarChar(255)
+  Otra_provincia_o_estado            String?         @map("Otra provincia o estado") @db.NVarChar(255)
+  Otro_c_digo_postal                 String?         @map("Otro código postal") @db.NVarChar(255)
+  Tel_fono_del_trabajo               String?         @map("Teléfono del trabajo") @db.NVarChar(255)
+  Tel_fono_del_trabajo_2             String?         @map("Teléfono del trabajo 2") @db.NVarChar(255)
+  Particular                         String?         @db.NVarChar(255)
+  Tel_fono_movil                     String?         @map("Teléfono movil") @db.NVarChar(255)
+  Otro_tel_fono                      String?         @map("Otro teléfono") @db.NVarChar(255)
+  Categor_as                         String?         @map("Categorías") @db.NVarChar(255)
+  Direcci_n_de_correo_electr_nico    String?         @map("Dirección de correo electrónico") @db.NVarChar(255)
+  Direcci_n_de_correo_electr_nico_2  String?         @map("Dirección de correo electrónico 2") @db.NVarChar(255)
+  Direcci_n_del_correo_electr_nico_3 String?         @map("Dirección del correo electrónico 3") @db.NVarChar(255)
+  Notas                              String?         @db.NVarChar(Max)
+  P_gina_web                         String?         @map("Página web") @db.NVarChar(255)
+  id_part                            Int?
+  Fact_Provedor                      Fact_Provedor[]
+  Participantes                      Participantes?  @relation(fields: [id_part], references: [ID_Participantes], onDelete: NoAction, onUpdate: NoAction, map: "FK__Proveedor__id_pa__3EDC53F0")
 
   @@index([C_digo_postal_del_trabajo], map: "Contactos_definitivo$Código postal del trabajo")
 }
@@ -163,11 +175,15 @@ model proyectos {
   valda                Int?
   ParteLetras          String?            @db.NVarChar(255)
   codProyecto          Int                @id(map: "PK__proyecto__0187B14F9C38CC5F") @default(autoincrement())
+  archv_tec_pry        archv_tec_pry[]    @ignore
+  captura_fotos        captura_fotos[]    @ignore
   detalles             detalles?
   Factura_suplido      Factura_suplido[]  @ignore
   Clientes             Clientes?          @relation(fields: [id_cliente], references: [id_cliente], onDelete: NoAction, onUpdate: NoAction, map: "FK__proyectos__id_cl__2645B050")
   PRY_edificacion      PRY_edificacion[]
   PRY_planeamiento     PRY_planeamiento[]
+  Servicios            Servicios[]        @ignore
+  trabaja              trabaja[]          @ignore
 }
 
 model registro_ejemplares {
@@ -184,21 +200,22 @@ model registro_ejemplares {
 }
 
 model registro_fotos {
-  Clave_Privada     Int       @id(map: "PK__registro__B01EC6D6DCA10FC0") @default(autoincrement()) @map("Clave Privada")
-  Ubicaci_n         String?   @map("Ubicación") @db.NVarChar(255)
-  N_mero_expediente String?   @map("Número expediente") @db.NVarChar(255)
-  Palabras_clave    String?   @map("Palabras clave") @db.NVarChar(255)
-  Contenido         String?   @db.NVarChar(255)
-  Proyecto          String?   @db.NVarChar(255)
-  Localidad         String?   @db.NVarChar(255)
-  Fecha_fotos       Float?    @map("Fecha fotos")
-  Numero_foto       Float?    @map("Numero foto")
-  Creaci_n_registro DateTime? @map("Creación registro")
-  Numero_caja       String?   @map("Numero caja") @db.NVarChar(255)
-  Carpeta           String?   @db.NVarChar(255)
-  Tama_o            String?   @map("Tamaño") @db.NVarChar(255)
-  Sobre             String?   @db.NVarChar(255)
-  N__Cliente        Int?      @map("Nº Cliente")
+  Clave_Privada     Int             @id(map: "PK__registro__B01EC6D6DCA10FC0") @default(autoincrement()) @map("Clave Privada")
+  Ubicaci_n         String?         @map("Ubicación") @db.NVarChar(255)
+  N_mero_expediente String?         @map("Número expediente") @db.NVarChar(255)
+  Palabras_clave    String?         @map("Palabras clave") @db.NVarChar(255)
+  Contenido         String?         @db.NVarChar(255)
+  Proyecto          String?         @db.NVarChar(255)
+  Localidad         String?         @db.NVarChar(255)
+  Fecha_fotos       Float?          @map("Fecha fotos")
+  Numero_foto       Float?          @map("Numero foto")
+  Creaci_n_registro DateTime?       @map("Creación registro")
+  Numero_caja       String?         @map("Numero caja") @db.NVarChar(255)
+  Carpeta           String?         @db.NVarChar(255)
+  Tama_o            String?         @map("Tamaño") @db.NVarChar(255)
+  Sobre             String?         @db.NVarChar(255)
+  N__Cliente        Int?            @map("Nº Cliente")
+  captura_fotos     captura_fotos[] @ignore
 
   @@map("registro fotos")
 }
@@ -248,17 +265,22 @@ model sysdiagrams {
 }
 
 model Trabajadores {
-  Nombre          String?  @db.VarChar(255)
-  Apellidos       String?  @db.VarChar(255)
-  Direccion       String?  @db.VarChar(255)
-  Telefono        String?  @db.VarChar(255)
-  NSegSocial      Int?
-  DNI             String?  @db.Char(9)
-  NCuentaBancaria String?  @db.VarChar(34)
-  Contrato        String?  @db.VarChar(255)
-  id_trabajador   Int      @default(autoincrement())
-  email           String   @id(map: "pk_email_trabajador") @db.NVarChar(255)
-  Usuario         Usuario?
+  Nombre           String?            @db.VarChar(255)
+  Apellidos        String?            @db.VarChar(255)
+  Direccion        String?            @db.VarChar(255)
+  Telefono         String?            @db.VarChar(255)
+  NSegSocial       Int?
+  DNI              String?            @db.Char(9)
+  NCuentaBancaria  String?            @db.VarChar(34)
+  Contrato         String?            @db.VarChar(255)
+  id_trabajador    Int                @default(autoincrement())
+  email            String             @id(map: "pk_email_trabajador") @db.NVarChar(255)
+  id_part          Int?
+  contrato         contrato[]
+  Gestion_horaria  Gestion_horaria[]
+  Parte_de_trabajo Parte_de_trabajo[]
+  Participantes    Participantes?     @relation(fields: [id_part], references: [ID_Participantes], onDelete: NoAction, onUpdate: NoAction, map: "FK__Trabajado__id_pa__40C49C62")
+  Usuario          Usuario?
 }
 
 model Usuario {
@@ -267,6 +289,7 @@ model Usuario {
   id_trabajador Int?
   password_hash String?      @db.NVarChar(255)
   rol_id        Int?
+  trabaja       trabaja[]    @ignore
   Roles         Roles?       @relation(fields: [rol_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "FK_Usuario_Rol")
   Trabajadores  Trabajadores @relation(fields: [email], references: [email], onUpdate: NoAction, map: "FK_Usuario_Trabajadores")
 }
@@ -281,62 +304,6 @@ model Factura_suplido {
   @@ignore
 }
 
-model proyectos_antiguo {
-  Numero_Expediente    String? @map("Numero Expediente") @db.NVarChar(255)
-  Palabras_clave       String? @map("Palabras clave") @db.NVarChar(255)
-  Proyecto             String? @db.NVarChar(255)
-  Arquitecto           String? @db.NVarChar(255)
-  m2_construidos_suelo Float?  @map("m2 construidos-suelo")
-  techo_edificable     Float?  @map("techo edificable")
-  m2_sotano            Float?  @map("m2 sotano")
-  numero_viviendas     Float?  @map("numero viviendas")
-  Fecha_Visado         String? @map("Fecha Visado") @db.NVarChar(255)
-  Fecha_Inicio         String? @map("Fecha Inicio") @db.NVarChar(255)
-  N_Expediente_Colegio String? @map("N Expediente Colegio") @db.NVarChar(255)
-  Localidad            String? @db.NVarChar(255)
-  Promotor             String? @db.NVarChar(255)
-  N__Cliente           Int?    @map("Nº Cliente")
-  Tipo_de_proyecto     String? @map("Tipo de proyecto") @db.NVarChar(255)
-  categoria            String? @db.NVarChar(255)
-  uso                  String? @db.VarChar(200)
-  situacion            String? @db.VarChar(255)
-  Tramitacion          String? @db.VarChar(100)
-  instancias           String? @db.VarChar(50)
-  ruta_carpeta         String? @map("ruta carpeta") @db.VarChar(255)
-  codProyecto          Int     @id(map: "PK__proyecto__0187B14F115B27B9") @default(autoincrement())
-  id_cliente           Int?
-  pasillo              Int?
-  columna              Int?
-  valda                Int?
-}
-
-model Proyectos_excel {
-  Id                        Int     @id(map: "Proyectos$Id") @default(autoincrement())
-  Grupo_cliente             String? @map("Grupo cliente") @db.NVarChar(255)
-  N__CLIENTE__PROMOTOR      String? @map("Nº CLIENTE -PROMOTOR") @db.NVarChar(255)
-  Nombre                    String? @db.NVarChar(255)
-  N__EXPEDIENTE             String? @map("Nº EXPEDIENTE") @db.NVarChar(255)
-  TIPO_EXPEDIENTE           String? @map("TIPO EXPEDIENTE") @db.NVarChar(255)
-  EXPEDIENTE_PALABRAS_CLAVE String? @map("EXPEDIENTE PALABRAS CLAVE") @db.NVarChar(255)
-  TIPO_DE_PROYECTO          String? @map("TIPO DE PROYECTO") @db.NVarChar(255)
-
-  @@index([EXPEDIENTE_PALABRAS_CLAVE], map: "Proyectos$EXPEDIENTE PALABRAS CLAVE")
-}
-
-model Proyectos_pru {
-  Id                        Int     @id(map: "Proyectos$PrimaryKey") @default(autoincrement())
-  N__Cliente_Promotor       String? @map("Nº Cliente Promotor") @db.NVarChar(255)
-  Codigo                    String? @db.NVarChar(255)
-  Nif                       String? @db.NVarChar(255)
-  N__Expediente             String? @map("Nº Expediente") @db.NVarChar(255)
-  Nombre                    String? @db.NVarChar(255)
-  Tipo_De_Expediente        String? @map("Tipo De Expediente") @db.NVarChar(255)
-  Expediente_Palabras_Clave String? @map("Expediente Palabras Clave") @db.NVarChar(255)
-  Tipo_de_Proyecto          String? @map("Tipo de Proyecto") @db.NVarChar(255)
-
-  @@index([Expediente_Palabras_Clave], map: "Proyectos$Expediente Palabras Clave")
-}
-
 model Roles {
   id          Int       @id(map: "PK__Roles__3213E83F6720AE52") @default(autoincrement())
   nombre      String    @unique(map: "UQ__Roles__72AFBCC68B06F803") @db.NVarChar(50)
@@ -344,34 +311,433 @@ model Roles {
   Usuario     Usuario[]
 }
 
-model Clientes_antiguo {
-  id_cliente    Int     @id(map: "Tabla1$PrimaryKey") @default(autoincrement())
-  Grupo_Cliente BigInt? @default(0, map: "DF__Tabla1__Grupo Cl__123EB7A3") @map("Grupo Cliente")
-  Id_Contable   BigInt? @default(0, map: "DF__Tabla1__Id_Conta__1332DBDC")
-  Nombre        String? @db.NVarChar(Max)
-  Nif           String? @db.NVarChar(100)
-
-  @@index([Id_Contable], map: "Tabla1$Id_Cliente")
-}
-
-model grupos {
-  Id     Int     @id(map: "grupos$PrimaryKey") @default(autoincrement())
-  Campo1 Int?    @default(0, map: "DF__grupos__Campo1__3493CFA7")
-  Campo2 String? @db.NVarChar(255)
-}
-
 model PRY_edificacion {
   id_edif          Int        @id(map: "PK__PRY_edif__FB2CD8941E36A11A") @default(autoincrement())
   parteLetras      String?    @db.VarChar(50)
   PRY_id           Int?
   numeroExpediente String?    @db.NVarChar(50)
+  PRY_AC           PRY_AC[]
+  PRY_AP           PRY_AP[]
+  PRY_B            PRY_B[]
+  PRY_DFO          PRY_DFO[]
+  PRY_DO           PRY_DO[]
+  PRY_E            PRY_E[]
   proyectos        proyectos? @relation(fields: [PRY_id], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_edifi__PRY_i__30C33EC3")
+  PRY_EP           PRY_EP[]
+  PRY_ESS          PRY_ESS[]
+  PRY_PI           PRY_PI[]
+  PRY_PU           PRY_PU[]
 }
 
 model PRY_planeamiento {
-  id_plan         Int        @id(map: "PK__planeami__3901EAE3F5B3EA3B") @default(autoincrement())
-  parteLetras     String?    @db.VarChar(50)
-  PRY_id          Int?
-  numeroExpediete String?    @db.NVarChar(50)
-  proyectos       proyectos? @relation(fields: [PRY_id], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_plane__PRY_i__395884C4")
+  id_plan          Int            @id(map: "PK__planeami__3901EAE3F5B3EA3B") @default(autoincrement())
+  parteLetras      String?        @db.VarChar(50)
+  PRY_id           Int?
+  numeroExpediente String?        @db.NVarChar(50)
+  PRY_DIA          PRY_DIA[]
+  PRY_ED           PRY_ED[]
+  PRY_EO           PRY_EO[]
+  PRY_INN_PGOU     PRY_INN_PGOU[]
+  PRY_INN_PPO      PRY_INN_PPO[]
+  PRY_OJC          PRY_OJC[]
+  PRY_PA           PRY_PA[]
+  PRY_PAA          PRY_PAA[]
+  PRY_PD           PRY_PD[]
+  PRY_PL_EP        PRY_PL_EP[]
+  proyectos        proyectos?     @relation(fields: [PRY_id], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_plane__PRY_i__395884C4")
+  PRY_PO           PRY_PO[]
+  PRY_POU          PRY_POU[]
+  PRY_PPO          PRY_PPO[]
+  PRY_PR           PRY_PR[]
+  PRY_PRI          PRY_PRI[]
+  PRY_PRP          PRY_PRP[]
+  PRY_PS           PRY_PS[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model archv_tec_pry {
+  codProyecto              Int?
+  id_tecnico               Int?
+  proyectos                proyectos?                @relation(fields: [codProyecto], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__archv_tec__codPr__467D75B8")
+  Consulta_Archivo_T_cnico Consulta_Archivo_T_cnico? @relation(fields: [id_tecnico], references: [ID_Tecnico], onDelete: NoAction, onUpdate: NoAction, map: "FK__archv_tec__id_te__477199F1")
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model captura_fotos {
+  clavePriv_fotos Int?
+  codProyecto     Int?
+  registro_fotos  registro_fotos? @relation(fields: [clavePriv_fotos], references: [Clave_Privada], onDelete: NoAction, onUpdate: NoAction, map: "FK__captura_f__clave__3BFFE745")
+  proyectos       proyectos?      @relation(fields: [codProyecto], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__captura_f__codPr__3CF40B7E")
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model cartas_nuevo {
+  NumeroRegistro   Int       @default(autoincrement())
+  Fecha            DateTime? @db.Date
+  Empresa          String?   @db.NVarChar(Max)
+  NumeroCliente    Int?
+  Destinatario     String?   @db.NVarChar(Max)
+  NumeroExpediente String?   @db.NVarChar(255)
+  TipoDeSoporte    String?   @db.NVarChar(Max)
+  ModoDeEnvio      String?   @db.NVarChar(Max)
+  Departamento     String?   @db.NVarChar(Max)
+  Remitente        String?   @db.NVarChar(Max)
+  Asunto           String?   @db.NVarChar(Max)
+  PDF              Bytes?
+  ruta_pdf         String?   @db.NVarChar(255)
+
+  @@ignore
+}
+
+model contrato {
+  id_contrato           Int                     @id(map: "PK__contrato__FF5F2A5649A66564") @default(autoincrement())
+  email_trabajador      String?                 @db.NVarChar(255)
+  id_nomina             Int?
+  pdf                   String?                 @db.VarChar(255)
+  Trabajadores          Trabajadores?           @relation(fields: [email_trabajador], references: [email], onDelete: NoAction, onUpdate: NoAction, map: "FK__contrato__email___318258D2")
+  nomina                nomina?                 @relation(fields: [id_nomina], references: [id_nomina], onDelete: NoAction, onUpdate: NoAction, map: "FK__contrato__id_nom__2CBDA3B5")
+  contrato_Autonomo     contrato_Autonomo[]
+  contrato_Cuenta_Ajena contrato_Cuenta_Ajena[]
+  contrato_socio        contrato_socio[]
+}
+
+model contrato_Autonomo {
+  id_contAutonomo Int       @id(map: "PK__contrato__9F547799B3E360B9") @default(autoincrement())
+  id_contrato     Int?
+  contrato        contrato? @relation(fields: [id_contrato], references: [id_contrato], onDelete: NoAction, onUpdate: NoAction, map: "FK__contrato___id_co__2F9A1060")
+}
+
+model contrato_Cuenta_Ajena {
+  id_contAjena    Int       @id(map: "PK__contrato__C6C9BEC1338E192D") @default(autoincrement())
+  tiempo_contrato String?   @db.VarChar(20)
+  id_contrato     Int?
+  contrato        contrato? @relation(fields: [id_contrato], references: [id_contrato], onDelete: NoAction, onUpdate: NoAction, map: "FK__contrato___id_co__2EA5EC27")
+}
+
+model contrato_socio {
+  id_contSocio Int       @id(map: "PK__contrato__03A1365FC76D3312") @default(autoincrement())
+  id_contrato  Int?
+  contrato     contrato? @relation(fields: [id_contrato], references: [id_contrato], onDelete: NoAction, onUpdate: NoAction, map: "FK__contrato___id_co__2DB1C7EE")
+}
+
+model Fact_Provedor {
+  Id_factura   Int          @id(map: "PK__Fact_Pro__A6DB936223179463") @default(autoincrement())
+  Id_Proveedor Int?
+  N__factura   String?      @map("Nº factura") @db.NVarChar(100)
+  Fecha        DateTime?    @db.Date
+  Asunto       String?      @db.NVarChar(255)
+  Cif          String?      @db.NVarChar(15)
+  PDF          Bytes?
+  detalles     String?      @db.NVarChar(255)
+  FaseProyecto String?      @db.VarChar(30)
+  Proveedores  Proveedores? @relation(fields: [Id_Proveedor], references: [Id], onDelete: NoAction, onUpdate: NoAction, map: "FK__Fact_Prov__Id_Pr__3552E9B6")
+}
+
+model Fact_Socio {
+  Id_factura   Int       @id(map: "PK__Fact_Soc__A6DB9362BF31976E") @default(autoincrement())
+  N__factura   String?   @map("Nº factura") @db.NVarChar(100)
+  Fecha        DateTime? @db.Date
+  Asunto       String?   @db.NVarChar(255)
+  Cif          String?   @db.NVarChar(15)
+  PDF          Bytes?
+  detalles     String?   @db.NVarChar(255)
+  FaseProyecto String?   @db.VarChar(30)
+  Id_Socio     Int?
+  Socios       Socios?   @relation(fields: [Id_Socio], references: [ID_Socios], onDelete: NoAction, onUpdate: NoAction, map: "FK__Fact_Soci__Id_So__345EC57D")
+}
+
+model grupo_emp {
+  Id       Int        @id(map: "grupos$PrimaryKey") @default(autoincrement())
+  codGrupo Int?       @default(0, map: "DF__grupos__Campo1__3493CFA7")
+  Nombre   String?    @db.NVarChar(255)
+  Clientes Clientes[]
+}
+
+model nomina {
+  id_nomina Int        @id(map: "PK__nomina__1E7025F6AD2315C9") @default(autoincrement())
+  concepto  String?    @db.VarChar(200)
+  precio    Float?
+  deduccion Float?
+  devengo   Float?
+  cuantia   Int?
+  contrato  contrato[]
+}
+
+model Participantes {
+  ID_Participantes  Int                 @id(map: "PK__Particip__96BE05FBCE74EA5A") @default(autoincrement())
+  Nombre            String?             @db.VarChar(100)
+  telefono          String?             @db.VarChar(30)
+  email             String?             @db.VarChar(30)
+  NIF               String?             @db.VarChar(20)
+  Clientes          Clientes[]
+  Personas_Externas Personas_Externas[]
+  Proveedores       Proveedores[]
+  Socios            Socios[]
+  Trabajadores      Trabajadores[]
+}
+
+model Personas_Externas {
+  ID_Personas_Externas Int            @id(map: "PK__Personas__AA8D5FF6A66A637B") @default(autoincrement())
+  Nombre               String?        @db.VarChar(50)
+  Nif                  String?        @unique(map: "UQ__Personas__C7D1D6C8C611C446") @db.VarChar(20)
+  Id_Part              Int?
+  Participantes        Participantes? @relation(fields: [Id_Part], references: [ID_Participantes], onDelete: NoAction, onUpdate: NoAction, map: "FK__Personas___Id_Pa__41B8C09B")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Prm_varios {
+  CodProyecto Int?
+  Id_Cliente  Int?
+
+  @@ignore
+}
+
+model PRY_AC {
+  id_AC            Int              @id(map: "PK__PRY_AC__0149254C89BC85E0") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_AC__cod_edif__76619304")
+}
+
+model PRY_AP {
+  id_AP            Int              @id(map: "PK__PRY_AP__0149257170E66984") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_AP__cod_edif__70A8B9AE")
+}
+
+model PRY_B {
+  id_B             Int              @id(map: "PK__PRY_B__9DB7D2D7F2169371") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_B__cod_edif__6EC0713C")
+}
+
+model PRY_DFO {
+  id_DFO           Int              @id(map: "PK__PRY_DFO__711E213DE3213F93") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_DFO__cod_edi__72910220")
+}
+
+model PRY_DIA {
+  id_DIA           Int               @id(map: "PK__PRY_DIA__711FC94CBEBA34FE") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_DIA__cod_pla__00DF2177")
+}
+
+model PRY_DO {
+  id_DO            Int              @id(map: "PK__PRY_DO__0148C2DC2119204D") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_DO__cod_edif__719CDDE7")
+}
+
+model PRY_E {
+  id_E             Int              @id(map: "PK__PRY_E__9DB7D2D89D4ABB1E") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_E__cod_edif__6FB49575")
+}
+
+model PRY_ED {
+  id_ED            Int               @id(map: "PK__PRY_ED__0148CAC2C25CDDC0") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_ED__cod_plan__7755B73D")
+}
+
+model PRY_EO {
+  id_EO            Int               @id(map: "PK__PRY_EO__0148CAFDDB0D1985") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_EO__cod_plan__7C1A6C5A")
+}
+
+model PRY_EP {
+  id_EP            Int              @id(map: "PK__PRY_EP__0148CAFED2790021") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_EP__cod_edif__73852659")
+}
+
+model PRY_ESS {
+  id_ESS           Int              @id(map: "PK__PRY_ESS__6E8BDBFE947F810C") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_ESS__cod_edi__756D6ECB")
+}
+
+model PRY_INN_PGOU {
+  id_INN_PGOU      Int               @id(map: "PK__PRY_INN___6AC1AE6813DC399C") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_INN_P__cod_p__04AFB25B")
+}
+
+model PRY_INN_PPO {
+  id_INN_PPO       Int               @id(map: "PK__PRY_INN___F80A2041686ACD69") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_INN_P__cod_p__05A3D694")
+}
+
+model PRY_OJC {
+  id_OJC           Int               @id(map: "PK__PRY_OJC__760F9ED1429937B4") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_OJC__cod_pla__03BB8E22")
+}
+
+model PRY_PA {
+  id_PA            Int               @id(map: "PK__PRY_PA__0149BFB707EEA5AA") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PA__cod_plan__7FEAFD3E")
+}
+
+model PRY_PAA {
+  id_PAA           Int               @id(map: "PK__PRY_PAA__76C1A9592A761BF9") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PAA__cod_pla__01D345B0")
+}
+
+model PRY_PD {
+  id_PD            Int               @id(map: "PK__PRY_PD__0149BFB03425ADA4") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PD__cod_plan__7B264821")
+}
+
+model PRY_PI {
+  id_PI            Int              @id(map: "PK__PRY_PI__0149BFBF5D12BC62") @default(autoincrement())
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PI__cod_edif__74794A92")
+}
+
+model PRY_PL_EP {
+  id_PL_EP         Int               @id(map: "PK__PRY_PL_E__8205D7B4F4C94D6D") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PL_EP__cod_p__7EF6D905")
+}
+
+model PRY_PO {
+  id_PO            Int               @id(map: "PK__PRY_PO__0149BF45D57C7EC1") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PO__cod_plan__078C1F06")
+}
+
+model PRY_POU {
+  id_POU           Int               @id(map: "PK__PRY_POU__76CDC7E304F2C753") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_POU__cod_pla__7E02B4CC")
+}
+
+model PRY_PPO {
+  id_PPO           Int               @id(map: "PK__PRY_PPO__76CD3F848609B5ED") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PPO__cod_pla__7849DB76")
+}
+
+model PRY_PR {
+  id_PR            Int               @id(map: "PK__PRY_PR__0149BF4625772F81") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PR__cod_plan__02C769E9")
+}
+
+model PRY_PRI {
+  id_PRI           Int               @id(map: "PK__PRY_PRI__76CD2FBCA144F40D") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PRI__cod_pla__7D0E9093")
+}
+
+model PRY_PRP {
+  id_PRP           Int               @id(map: "PK__PRY_PRP__76CD2E472413E94D") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PRP__cod_pla__0E391C95")
+}
+
+model PRY_PS {
+  id_PS            Int               @id(map: "PK__PRY_PS__0149BF41CAEFAD65") @default(autoincrement())
+  parteLetras      String?           @db.VarChar(50)
+  cod_plan         Int?
+  numeroExpediente String?           @db.VarChar(50)
+  PRY_planeamiento PRY_planeamiento? @relation(fields: [cod_plan], references: [id_plan], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PS__cod_plan__0697FACD")
+}
+
+model PRY_PU {
+  parteLetras      String?          @db.VarChar(50)
+  cod_edif         Int?
+  numeroExpediente String?          @db.VarChar(50)
+  id_PU            Int              @id(map: "PK__PRY_PU__0149BF43AA40E7AF") @default(autoincrement())
+  PRY_edificacion  PRY_edificacion? @relation(fields: [cod_edif], references: [id_edif], onDelete: NoAction, onUpdate: NoAction, map: "FK__PRY_PU__cod_edif__6DCC4D03")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Servicios {
+  ID_Socios    Int?
+  Id_Proyectos Int?
+  proyectos    proyectos? @relation(fields: [Id_Proyectos], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__Servicios__Id_Pr__336AA144")
+  Socios       Socios?    @relation(fields: [ID_Socios], references: [ID_Socios], onDelete: NoAction, onUpdate: NoAction, map: "FK__Servicios__ID_So__32767D0B")
+
+  @@ignore
+}
+
+model Socios {
+  ID_Socios     Int            @id(map: "PK__Socios__E6FCCD8ED425DBED") @default(autoincrement())
+  Nombre        String?        @db.VarChar(50)
+  Nif           String?        @unique(map: "UQ__Socios__C7D1D6C8D59672F3") @db.VarChar(20)
+  Id_Part       Int?
+  Fact_Socio    Fact_Socio[]
+  Servicios     Servicios[]    @ignore
+  Participantes Participantes? @relation(fields: [Id_Part], references: [ID_Participantes], onDelete: NoAction, onUpdate: NoAction, map: "FK__Socios__Id_Part__3FD07829")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model trabaja {
+  codProyecto   Int?
+  email_usuario String?    @db.NVarChar(255)
+  proyectos     proyectos? @relation(fields: [codProyecto], references: [codProyecto], onDelete: NoAction, onUpdate: NoAction, map: "FK__trabaja__codProy__44952D46")
+  Usuario       Usuario?   @relation(fields: [email_usuario], references: [email], onDelete: NoAction, onUpdate: NoAction, map: "FK__trabaja__email_u__4589517F")
+
+  @@ignore
 }

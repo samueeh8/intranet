@@ -3,6 +3,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { filtrosDisponiblesPorTabla } from "@/lib/table-filters";
+import { showedFields } from "@/lib/showed-fields";
 import "./gestion.css";
 
 export default function GestionPage() {
@@ -45,18 +46,18 @@ export default function GestionPage() {
   
   const handleConsultar = () => {
     const valor = inputRef.current?.value?.trim();
-    if (!selectedField || !valor) return;
   
-    const nuevoFiltro = { [selectedField]: valor };
+    const nuevoFiltro = (selectedField && valor) ? { [selectedField]: valor } : {};
   
     setFilters(nuevoFiltro);
     setOffset(0);
     setData([]);
-
+  
     setTimeout(() => {
       fetchData(0, nuevoFiltro);
     }, 0);
   };
+  
   
 
   const fetchData = async (start, filtroActual = filters) => {
@@ -88,18 +89,18 @@ export default function GestionPage() {
     <div className="gestion-container">
       <h1 className="gestion-title">Gestión de datos</h1>
 
-      <div className="gestion-select-group">
-        <label>Acción:</label>
-        <select value={action} onChange={(e) => setAction(e.target.value)}>
+      <div className="gestion-filtros">
+        <label>Acción :</label>
+        <select className="gestion-input" value={action} onChange={(e) => setAction(e.target.value)}>
           <option value="">Selecciona una acción</option>
           <option value="consultar">Consultar</option>
-          <option value="crear">Crear nuevo registro</option>
+          <option value="crear">Nuevo registro</option>
         </select>
       </div>
 
-      <div className="gestion-select-group">
-        <label>Tabla:</label>
-        <select value={tableName} onChange={(e) => setTableName(e.target.value)}>
+      <div className="gestion-filtros">
+        <label>Tabla :</label>
+        <select className="gestion-input" value={tableName} onChange={(e) => setTableName(e.target.value)}>
           <option value="">Selecciona una tabla</option>
           {availableTables.map((table) => (
             <option key={table} value={table}>{table}</option>
@@ -109,9 +110,9 @@ export default function GestionPage() {
 
       {action === "consultar" && tableName && (
         <div className="gestion-filtros">
-            <h4>Filtros:</h4>
-
+            <label>Filtros :</label>
             <select
+            className="gestion-input"
             value={selectedField}
             onChange={(e) => setSelectedField(e.target.value)}
             >
@@ -125,44 +126,48 @@ export default function GestionPage() {
 
             {selectedField && (
             <input
+                className="gestion-input"
                 ref={inputRef}
                 type="text"
-                placeholder={`Valor para ${selectedField}`}
+                placeholder={`${
+                  (filtrosDisponiblesPorTabla[tableName] || []).find(c => c.name === selectedField)?.label || selectedField
+                }`}
                 value={selectedValue}
                 onChange={(e) => setSelectedValue(e.target.value)}
             />
             )}
-
-            <button
-            className="gestion-btn"
-            onClick={() => {
-                setFilters({ [selectedField]: inputRef.current?.value });
-                handleConsultar();
-              }}
-              disabled={!selectedField || !selectedValue}
-            >
-            Consultar
-            </button>
         </div>
         )}
+        <button
+          className="gestion-btn"
+          onClick={() => {
+              handleConsultar();
+            }}
+          >
+          Consultar
+        </button>
 
 
 
       <div className="gestion-scroll-wrapper" ref={containerRef}>
         {data.length > 0 && (
-          <table className="modern-table">
+          <table className="users-table">
             <thead>
               <tr>
-                {Object.keys(data[0]).map((key) => (
-                  <th key={key}>{key}</th>
+                {showedFields[tableName]?.map(({ label }, i) => (
+                  <th key={label}>{label}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {data.map((row, index) => (
-                <tr key={row?.NumeroRegistro || `${index}-${Math.random()}`}>
-                  {Object.entries(row).map(([key, val]) => (
-                    <td key={key}>{String(val)}</td>
+                <tr key={`row-${index}`}>
+                  {showedFields[tableName]?.map(({ campo }) => (
+                    <td key={campo}>
+                      {typeof row[campo] === "object" && row[campo] !== null
+                        ? JSON.stringify(row[campo])
+                        : String(row[campo] ?? "")}
+                    </td>
                   ))}
                 </tr>
               ))}
@@ -171,7 +176,7 @@ export default function GestionPage() {
         )}
         {loading && <p className="loading-msg">Cargando más...</p>}
       </div>
+      {data.length > 0 && <div className="table-end" />}
     </div>
   );
 }
-

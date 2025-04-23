@@ -1,6 +1,7 @@
 export const filtrosDisponiblesPorTabla = {
     proyectos: [
       { name: "numero_expediente", label: "Nº Expediente" },
+      { name: "palabras_clave", label: "Palabras clave" },
       { name: "proyecto", label: "Proyecto" },
       { name: "promotor", label: "Promotor" },
       { name: "fecha_inicio", label: "Fecha Inicio" },
