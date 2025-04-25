@@ -1,9 +1,9 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { filtrosDisponiblesPorTabla } from "@/lib/table-filters";
+import { formatLabels } from "@/lib/table-filters";
 import { showedFields } from "@/lib/showed-fields";
+import { campoPrisma } from "@/lib/prisma-mapper";
 import "./gestion.css";
 
 export default function GestionPage() {
@@ -15,12 +15,11 @@ export default function GestionPage() {
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(false);
-  const [selectedField, setSelectedField] = useState("");
-  const [selectedValue, setSelectedValue] = useState("");
+  const [multiFilters, setMultiFilters] = useState([{ campo: "", valor: "" }]);
+  const [nuevoRegistro, setNuevoRegistro] = useState({});
 
 
   const containerRef = useRef(null);
-  const inputRef = useRef(null);
   const limit = 50;
 
   useEffect(() => {
@@ -43,36 +42,20 @@ export default function GestionPage() {
     container.addEventListener("scroll", handleScroll);
     return () => container.removeEventListener("scroll", handleScroll);
   }, [loading, hasMore, offset]);
-  
-  const handleConsultar = () => {
-    const valor = inputRef.current?.value?.trim();
-  
-    const nuevoFiltro = (selectedField && valor) ? { [selectedField]: valor } : {};
-  
-    setFilters(nuevoFiltro);
-    setOffset(0);
-    setData([]);
-  
-    setTimeout(() => {
-      fetchData(0, nuevoFiltro);
-    }, 0);
-  };
-  
-  
 
   const fetchData = async (start, filtroActual = filters) => {
     if (!tableName) return;
-  
+
     setLoading(true);
     const params = new URLSearchParams({ table: tableName, limit, offset: start });
-  
+
     Object.entries(filtroActual).forEach(([key, val]) => {
       if (val) params.append(key, val);
     });
-  
+
     const res = await fetch(`/api/data?${params.toString()}`);
     const json = await res.json();
-  
+
     if (Array.isArray(json)) {
       setData((prev) => [...prev, ...json]);
       setOffset(start);
@@ -80,10 +63,90 @@ export default function GestionPage() {
     } else {
       setHasMore(false);
     }
-  
+
     setLoading(false);
   };
+
+  const handleConsultar = () => {
+    const filtrosValidos = {};
+    multiFilters.forEach(({ campo, valor }) => {
+      if (campo && valor) filtrosValidos[campo] = valor.trim();
+    });
+
+    setFilters(filtrosValidos);
+    setOffset(0);
+    setData([]);
+    setTimeout(() => fetchData(0, filtrosValidos), 0);
+  };
+
+  const handleChangeCampo = (index, value) => {
+    const newFilters = [...multiFilters];
+    newFilters[index].campo = value;
+    setMultiFilters(newFilters);
+  };
+
+  const handleChangeValor = (index, value) => {
+    const newFilters = [...multiFilters];
+    newFilters[index].valor = value;
+    setMultiFilters(newFilters);
+  };
+
+  const handleAddFiltro = () => {
+    setMultiFilters([...multiFilters, { campo: "", valor: "" }]);
+  };
+
+  const handleRemoveFiltro = (index) => {
+    const newFilters = [...multiFilters];
+    newFilters.splice(index, 1);
+    setMultiFilters(newFilters);
+  };
+
+
+  const handleCrearRegistro = async () => {
+    if (!tableName) return;
   
+    try {
+      const res = await fetch(`/api/data`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ table: tableName, data: nuevoRegistro }),
+      });
+  
+      const result = await res.json();
+  
+      if (res.ok) {
+        alert("Registro creado correctamente ✅");
+        setNuevoRegistro({});
+      } else {
+        alert(`Error: ${result.message || "No se pudo crear el registro."}`);
+      }
+    } catch (error) {
+      console.error("Error al crear registro:", error);
+      alert("Error al enviar los datos al servidor.");
+    }
+  };
+  
+
+  const puedeConsultar = action && tableName;
+
+  const obtenerCamposEditables = (tabla) => {
+    const campos = campoPrisma[tabla] || {};
+    return Object.entries(campos).filter(([nombre, config]) => {
+      const esID = /^id_/.test(nombre.toLowerCase()) || nombre.toLowerCase().endsWith("_id");
+      const esRelacion = config.tipo === "rel";
+      return !esID && !esRelacion;
+    });
+  };
+
+  const obtenerLabelBonito = (tabla, campo) => {
+    const lista = formatLabels[tabla] || [];
+    const item = lista.find((f) => f.name === campo);
+    return item?.label || campo;
+  };
+  
+
 
   return (
     <div className="gestion-container">
@@ -91,7 +154,7 @@ export default function GestionPage() {
 
       <div className="gestion-filtros">
         <label>Acción :</label>
-        <select className="gestion-input" value={action} onChange={(e) => setAction(e.target.value)}>
+        <select  value={action} onChange={(e) => setAction(e.target.value)}>
           <option value="">Selecciona una acción</option>
           <option value="consultar">Consultar</option>
           <option value="crear">Nuevo registro</option>
@@ -100,7 +163,7 @@ export default function GestionPage() {
 
       <div className="gestion-filtros">
         <label>Tabla :</label>
-        <select className="gestion-input" value={tableName} onChange={(e) => setTableName(e.target.value)}>
+        <select  value={tableName} onChange={(e) => setTableName(e.target.value)}>
           <option value="">Selecciona una tabla</option>
           {availableTables.map((table) => (
             <option key={table} value={table}>{table}</option>
@@ -109,44 +172,91 @@ export default function GestionPage() {
       </div>
 
       {action === "consultar" && tableName && (
-        <div className="gestion-filtros">
-            <label>Filtros :</label>
-            <select
-            className="gestion-input"
-            value={selectedField}
-            onChange={(e) => setSelectedField(e.target.value)}
-            >
-            <option value="">Selecciona un campo</option>
-            {(filtrosDisponiblesPorTabla[tableName] || []).map((campo) => (
-                <option key={campo.name} value={campo.name}>
-                {campo.label}
-                </option>
-            ))}
-            </select>
+        <>
+          {multiFilters.map((filtro, index) => (
+            <div className="gestion-filtros" key={index}>
+              <label>{`Filtro ${index + 1}:`}</label>
 
-            {selectedField && (
-            <input
-                className="gestion-input"
-                ref={inputRef}
+              <select
+                
+                value={filtro.campo}
+                onChange={(e) => handleChangeCampo(index, e.target.value)}
+              >
+                <option value="">Selecciona un campo</option>
+                {(showedFields[tableName] || []).map(({ campo, label }) => (
+                  <option key={campo} value={campo}>
+                    {label}
+                  </option>
+                ))}
+
+              </select>
+
+              <input
+                
                 type="text"
-                placeholder={`${
-                  (filtrosDisponiblesPorTabla[tableName] || []).find(c => c.name === selectedField)?.label || selectedField
-                }`}
-                value={selectedValue}
-                onChange={(e) => setSelectedValue(e.target.value)}
-            />
-            )}
+                placeholder="valor"
+                value={filtro.valor}
+                onChange={(e) => handleChangeValor(index, e.target.value)}
+              />
+
+              {multiFilters.length > 1 && (
+                <button
+                  type="button"
+                  className="gestion-btn-small"
+                  onClick={() => handleRemoveFiltro(index)}
+                >
+                  -
+                </button>
+              )}
+            </div>
+          ))}
+
+          <div className="gestion-filtros">
+            <button
+              type="button"
+              className="gestion-btn-small gestion-btn-add"
+              onClick={handleAddFiltro}
+            >
+              +
+            </button>
+          </div>
+        </>
+      )}
+
+      {action === "crear" && tableName && (
+        <div className="crear-registro-wrapper">
+          <h3>Nuevo registro</h3>
+
+          <div className="campos-container">
+            {obtenerCamposEditables(tableName).map(([key, { campo }]) => (
+              <div key={key} className="campo-item">
+                <label>{obtenerLabelBonito(tableName, campo)}</label>
+                <input
+                  type="text"
+                  value={nuevoRegistro[campo] || ""}
+                  onChange={(e) =>
+                    setNuevoRegistro({ ...nuevoRegistro, [campo]: e.target.value })
+                  }
+                />
+              </div>
+            ))}
+          </div>
+
+          <button className="gestion-btn" onClick={handleCrearRegistro}>
+            Guardar registro
+          </button>
         </div>
-        )}
+      )}
+
+      {action === "consultar" && (
         <button
           className="gestion-btn"
-          onClick={() => {
-              handleConsultar();
-            }}
-          >
+          onClick={handleConsultar}
+          disabled={!puedeConsultar}
+        >
           Consultar
         </button>
-
+      )}
 
 
       <div className="gestion-scroll-wrapper" ref={containerRef}>
@@ -154,7 +264,7 @@ export default function GestionPage() {
           <table className="users-table">
             <thead>
               <tr>
-                {showedFields[tableName]?.map(({ label }, i) => (
+                {showedFields[tableName]?.map(({ label }) => (
                   <th key={label}>{label}</th>
                 ))}
               </tr>
@@ -164,8 +274,8 @@ export default function GestionPage() {
                 <tr key={`row-${index}`}>
                   {showedFields[tableName]?.map(({ campo }) => (
                     <td key={campo}>
-                      {typeof row[campo] === "object" && row[campo] !== null
-                        ? JSON.stringify(row[campo])
+                      {campoPrisma[tableName]?.[campo]?.tipo === "date"
+                        ? new Date(row[campo]).toLocaleDateString("es-ES")
                         : String(row[campo] ?? "")}
                     </td>
                   ))}

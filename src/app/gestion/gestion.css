@@ -16,10 +16,10 @@
 
 .gestion-filtros {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr;
+  grid-template-columns: 1fr 2fr 2fr 1fr;
   align-items: center;
   margin-bottom: 0.5rem;
-  width: 60%;
+  width: 65%;
 }
 
 .gestion-filtros label {
@@ -41,16 +41,20 @@
   outline: none;
 }
 
+.gestion-filtros input {
+  cursor: text;
+}
+
 .gestion-filtros select:focus,
 .gestion-filtros input:focus {
-  border-color: #9e2d2d;
+  border-color: #000000;
 }
 
 
 .gestion-btn {
   padding: 0.6rem 1.2rem;
-  margin: 0.5rem 0 3rem 0;
-  width: 20%;
+  margin: 1.5rem 0 3rem 2rem;
+  width: 18%;
   font-size: 1rem;
   font-weight: bold;
   background-color: #9e2d2d;
@@ -61,9 +65,91 @@
   transition: background-color 0.2s ease;
 }
 
+.gestion-btn:disabled {
+  background-color: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.gestion-btn:disabled:hover {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .gestion-btn:hover {
 background-color: #7e1e1e;
 }
+
+.gestion-btn-small {
+  padding: 0.5rem 0.8rem;
+  margin: 0 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: #777;
+  color: #fff;
+  border: none;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 3rem;
+}
+
+.gestion-btn-small:hover {
+  background-color: #555;
+}
+
+.gestion-btn-add {
+  background-color: #4c84fc;
+}
+
+.gestion-btn-add:hover {
+  background-color: #1e66f5;
+}
+
+.crear-registro-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.campos-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+
+.campo-item {
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  width: 80%;
+}
+
+.campo-item input {
+  padding: 0.5rem 0.3rem;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  background-color: #fff;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+  max-width: 15rem;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.campo-item label {
+  margin: 0.5rem 0 0.5rem 0.3rem;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.campo-item input:focus {
+  border-color: #000000;
+}
+
 
 .gestion-scroll-wrapper {
   place-self: center;

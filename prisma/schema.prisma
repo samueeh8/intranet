@@ -147,7 +147,7 @@ model Proveedores {
   @@index([C_digo_postal_del_trabajo], map: "Contactos_definitivo$Código postal del trabajo")
 }
 
-model proyectos {
+model Proyectos {
   Numero_Expediente    String?            @map("Numero Expediente") @db.NVarChar(255)
   Palabras_clave       String?            @map("Palabras clave") @db.NVarChar(255)
   Proyecto             String?            @db.NVarChar(255)
