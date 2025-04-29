@@ -49,18 +49,30 @@ for (const [key, value] of searchParams.entries()) {
 
   if (tipo === "int") {
     where[campo] = { equals: parseInt(value, 10) };
-    
+
   } else if (tipo === "date") {
-    const parsedDate = new Date(value);
-
-    const inicioDia = new Date(parsedDate.setHours(0, 0, 0, 0));
-    const finDia = new Date(parsedDate.setHours(23, 59, 59, 999));
-
-    where[campo] = {
-      gte: inicioDia,
-      lte: finDia
-    };
-
+    try {
+      const [inicio, fin] = JSON.parse(value || "[]");
+  
+      if (inicio && !fin) {
+        const fecha = new Date(inicio);
+        where[campo] = {
+          gte: new Date(fecha.setHours(0, 0, 0, 0)),
+          lte: new Date(fecha.setHours(23, 59, 59, 999)),
+        };
+      }
+  
+      if (inicio && fin) {
+        const fechaInicio = new Date(inicio);
+        const fechaFin = new Date(fin);
+        where[campo] = {
+          gte: fechaInicio,
+          lte: fechaFin,
+        };
+      }
+    } catch (error) {
+      console.warn("Filtro de fecha malformado:", value);
+    }
   } else {
     where[campo] = { contains: value };
   }
@@ -103,6 +115,8 @@ export async function POST(req) {
   if (!checkPermission({ role, resource: table, action: "create" })) {
     return NextResponse.json({ message: "No autorizado" }, { status: 403 });
   }
+
+  const allowedTables = ["proyectos", "cartas", "clientes"];
 
   if (!allowedTables.includes(table)) {
     return NextResponse.json({ message: "Tabla no permitida" }, { status: 400 });

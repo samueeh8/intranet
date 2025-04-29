@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import { formatLabels } from "@/lib/table-filters";
 import { showedFields } from "@/lib/showed-fields";
 import { campoPrisma } from "@/lib/prisma-mapper";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import "./gestion.css";
 
 export default function GestionPage() {
@@ -17,6 +19,7 @@ export default function GestionPage() {
   const [hasMore, setHasMore] = useState(false);
   const [multiFilters, setMultiFilters] = useState([{ campo: "", valor: "" }]);
   const [nuevoRegistro, setNuevoRegistro] = useState({});
+  const [rangosFechas, setRangosFechas] = useState({});
 
 
   const containerRef = useRef(null);
@@ -106,27 +109,57 @@ export default function GestionPage() {
     if (!tableName) return;
   
     try {
+      const datosConvertidos = { ...nuevoRegistro };
+  
+      const camposInt = ["N__Cliente", "id_cliente", "columna", "valda", "pasillo", "NumeroCliente", "NumeroRegistro"];
+      const camposFloat = ["numero_viviendas"];
+      const camposFecha = ["Fecha", "Fecha_Visado", "Fecha_Inicio"];
+      const camposExcluir = ["id", "NumeroRegistro", "id_carta", "id_cliente"];
+
+      for (const campo of camposExcluir) {
+        delete datosConvertidos[campo];
+      }
+  
+      for (const campo of camposInt) {
+        if (datosConvertidos[campo] !== undefined && datosConvertidos[campo] !== "") {
+          datosConvertidos[campo] = parseInt(datosConvertidos[campo], 10);
+        }
+      }
+  
+      for (const campo of camposFloat) {
+        if (datosConvertidos[campo] !== undefined && datosConvertidos[campo] !== "") {
+          datosConvertidos[campo] = parseFloat(datosConvertidos[campo]);
+        }
+      }
+
+      for (const campo of camposFecha) {
+        if (datosConvertidos[campo]) {
+          datosConvertidos[campo] = new Date(datosConvertidos[campo]).toISOString();
+        }
+      }
+
       const res = await fetch(`/api/data`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ table: tableName, data: nuevoRegistro }),
+        body: JSON.stringify({ table: tableName, data: datosConvertidos }),
       });
   
       const result = await res.json();
   
       if (res.ok) {
-        alert("Registro creado correctamente ✅");
+        alert("✅ Registro creado correctamente");
         setNuevoRegistro({});
       } else {
-        alert(`Error: ${result.message || "No se pudo crear el registro."}`);
+        alert(`❌ Error: ${result.message || "No se pudo crear el registro."}`);
       }
     } catch (error) {
       console.error("Error al crear registro:", error);
       alert("Error al enviar los datos al servidor.");
     }
   };
+  
   
 
   const puedeConsultar = action && tableName;
@@ -191,13 +224,70 @@ export default function GestionPage() {
 
               </select>
 
-              <input
+              {campoPrisma[tableName]?.[filtro.campo]?.tipo === "date" ? (
+                <DatePicker
+                  selected={rangosFechas[index]?.[0] || null}
+                  onChange={(fechaSeleccionada) => {
+                    let actualizados = [...multiFilters];
                 
-                type="text"
-                placeholder="valor"
-                value={filtro.valor}
-                onChange={(e) => handleChangeValor(index, e.target.value)}
-              />
+                    if (!Array.isArray(fechaSeleccionada)) {
+                      setRangosFechas({ ...rangosFechas, [index]: [fechaSeleccionada] });
+                      actualizados[index].valor = JSON.stringify([fechaSeleccionada]);
+                    }
+                    else {
+                      setRangosFechas({ ...rangosFechas, [index]: fechaSeleccionada });
+                      actualizados[index].valor = JSON.stringify(fechaSeleccionada);
+                    }
+                
+                    setMultiFilters(actualizados);
+                  }}
+                  startDate={rangosFechas[index]?.[0] || null}
+                  endDate={rangosFechas[index]?.[1] || null}
+                  selectsRange={true}
+                  isClearable
+                  dateFormat="yyyy-MM-dd"
+                  
+                  placeholderText="Selecciona fecha o rango"
+                  showPopperArrow={false}
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={50}
+                  renderCustomHeader={({ date, changeYear, changeMonth}) => (
+                    <div className="datepicker-header">
+                      <select
+                        className="datepicker-select"
+                        value={date.getFullYear()}
+                        onChange={(e) => changeYear(+e.target.value)}
+                        
+                      >
+                        {Array.from({ length: 50 }, (_, i) => {
+                          const year = new Date().getFullYear() - i;
+                          return <option key={year} value={year}>{year}</option>;
+                        })}
+                      </select>
+                      <select
+                        className="datepicker-select"
+                        value={date.getMonth()}
+                        onChange={(e) => changeMonth(+e.target.value)}
+                        
+                      >
+                        {["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"].map(
+                          (month, i) => (
+                            <option key={month} value={i}>{month}</option>
+                          )
+                        )}
+                      </select>
+                    </div>
+                  )}
+                />
+              ) : (
+                <input
+                  type="text"
+                  placeholder="valor"
+                  
+                  value={filtro.valor}
+                  onChange={(e) => handleChangeValor(index, e.target.value)}
+                />
+              )}
 
               {multiFilters.length > 1 && (
                 <button
