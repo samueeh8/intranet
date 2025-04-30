@@ -48,6 +48,6 @@ export const campoPrisma = {
     Grupo:      { campo: "Grupo", tipo: "string" },
     Codigo:     { campo: "Codigo", tipo: "string" },
     Nombre:     { campo: "Nombre", tipo: "string" },
-    Nif:        { campo: "Nif", tipo: "string" },
+    Nif:        { campo: "Nif", tipo: "string" }
   },
 };

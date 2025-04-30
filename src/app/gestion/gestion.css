@@ -136,6 +136,7 @@ background-color: #7e1e1e;
   display: flex;
   flex-direction: column;
   gap: 3rem;
+  padding-top: 1.5rem;
 }
 
 .campos-container {
@@ -152,13 +153,13 @@ background-color: #7e1e1e;
 }
 
 .campo-item input {
-  padding: 0.5rem 0.3rem;
+  padding: 0.4rem 0.3rem;
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 0.25rem;
   background-color: #fff;
   transition: border 0.2s ease, box-shadow 0.2s ease;
-  max-width: 15rem;
+  width: 15rem;
   outline: none;
   border: none;
   border-bottom: 1px solid #ccc;

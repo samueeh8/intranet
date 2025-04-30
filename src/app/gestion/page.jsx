@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { formatLabels } from "@/lib/table-filters";
 import { showedFields } from "@/lib/showed-fields";
 import { campoPrisma } from "@/lib/prisma-mapper";
-import DatePicker from "react-datepicker";
+import CustomDatePicker from "@/components/DatePicker/CustomDatePicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./gestion.css";
 
@@ -111,7 +111,7 @@ export default function GestionPage() {
     try {
       const datosConvertidos = { ...nuevoRegistro };
   
-      const camposInt = ["N__Cliente", "id_cliente", "columna", "valda", "pasillo", "NumeroCliente", "NumeroRegistro"];
+      const camposInt = ["N__Cliente", "id_cliente", "columna", "valda", "pasillo", "NumeroCliente", "NumeroRegistro", "Grupo"];
       const camposFloat = ["numero_viviendas"];
       const camposFecha = ["Fecha", "Fecha_Visado", "Fecha_Inicio"];
       const camposExcluir = ["id", "NumeroRegistro", "id_carta", "id_cliente"];
@@ -225,60 +225,26 @@ export default function GestionPage() {
               </select>
 
               {campoPrisma[tableName]?.[filtro.campo]?.tipo === "date" ? (
-                <DatePicker
-                  selected={rangosFechas[index]?.[0] || null}
-                  onChange={(fechaSeleccionada) => {
-                    let actualizados = [...multiFilters];
-                
-                    if (!Array.isArray(fechaSeleccionada)) {
-                      setRangosFechas({ ...rangosFechas, [index]: [fechaSeleccionada] });
-                      actualizados[index].valor = JSON.stringify([fechaSeleccionada]);
-                    }
-                    else {
-                      setRangosFechas({ ...rangosFechas, [index]: fechaSeleccionada });
-                      actualizados[index].valor = JSON.stringify(fechaSeleccionada);
-                    }
-                
-                    setMultiFilters(actualizados);
-                  }}
-                  startDate={rangosFechas[index]?.[0] || null}
-                  endDate={rangosFechas[index]?.[1] || null}
-                  selectsRange={true}
-                  isClearable
-                  dateFormat="yyyy-MM-dd"
-                  
-                  placeholderText="Selecciona fecha o rango"
-                  showPopperArrow={false}
-                  scrollableYearDropdown
-                  yearDropdownItemNumber={50}
-                  renderCustomHeader={({ date, changeYear, changeMonth}) => (
-                    <div className="datepicker-header">
-                      <select
-                        className="datepicker-select"
-                        value={date.getFullYear()}
-                        onChange={(e) => changeYear(+e.target.value)}
-                        
-                      >
-                        {Array.from({ length: 50 }, (_, i) => {
-                          const year = new Date().getFullYear() - i;
-                          return <option key={year} value={year}>{year}</option>;
-                        })}
-                      </select>
-                      <select
-                        className="datepicker-select"
-                        value={date.getMonth()}
-                        onChange={(e) => changeMonth(+e.target.value)}
-                        
-                      >
-                        {["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"].map(
-                          (month, i) => (
-                            <option key={month} value={i}>{month}</option>
-                          )
-                        )}
-                      </select>
-                    </div>
-                  )}
-                />
+                <CustomDatePicker
+                selected={rangosFechas[index]?.[0] || null}
+                onChange={(fechaSeleccionada) => {
+                  let actualizados = [...multiFilters];
+              
+                  if (!Array.isArray(fechaSeleccionada)) {
+                    setRangosFechas({ ...rangosFechas, [index]: [fechaSeleccionada] });
+                    actualizados[index].valor = JSON.stringify([fechaSeleccionada]);
+                  } else {
+                    setRangosFechas({ ...rangosFechas, [index]: fechaSeleccionada });
+                    actualizados[index].valor = JSON.stringify(fechaSeleccionada);
+                  }
+              
+                  setMultiFilters(actualizados);
+                }}
+                startDate={rangosFechas[index]?.[0] || null}
+                endDate={rangosFechas[index]?.[1] || null}
+                selectsRange={true}
+              />
+              
               ) : (
                 <input
                   type="text"
@@ -318,18 +284,33 @@ export default function GestionPage() {
           <h3>Nuevo registro</h3>
 
           <div className="campos-container">
-            {obtenerCamposEditables(tableName).map(([key, { campo }]) => (
-              <div key={key} className="campo-item">
-                <label>{obtenerLabelBonito(tableName, campo)}</label>
+          {obtenerCamposEditables(tableName).map(([key, { campo }]) => (
+            <div key={key} className="campo-item">
+              <label>{obtenerLabelBonito(tableName, campo)}</label>
+
+              {campoPrisma[tableName]?.[campo]?.tipo === "date" ? (
+                <CustomDatePicker
+                  selected={nuevoRegistro[campo] ? new Date(nuevoRegistro[campo]) : null}
+                  onChange={(fechaSeleccionada) =>
+                    setNuevoRegistro((prev) => ({
+                      ...prev,
+                      [campo]: fechaSeleccionada,
+                    }))
+                  }
+                />
+                ) : (
                 <input
                   type="text"
                   value={nuevoRegistro[campo] || ""}
                   onChange={(e) =>
                     setNuevoRegistro({ ...nuevoRegistro, [campo]: e.target.value })
                   }
+                  // placeholder={`Introduce ${obtenerLabelBonito(tableName, campo)}`}
                 />
-              </div>
-            ))}
+              )}
+            </div>
+          ))}
+
           </div>
 
           <button className="gestion-btn" onClick={handleCrearRegistro}>
