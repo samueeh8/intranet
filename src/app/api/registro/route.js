@@ -41,7 +41,7 @@ export async function POST(request) {
       data: {
         email,
         password_hash: hashedPassword,
-        role: "trabajador"
+        rol_id: 1,
       }
     });
 
