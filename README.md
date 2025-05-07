@@ -42,11 +42,31 @@ El repositorio utiliza las siguientes ramas principales:
    - Revisar el código, solicitar revisiones si es necesario y realizar los cambios requeridos.
    - Una vez aprobado, fusionar la rama en `develop`.
 
-5. **Pruebas y validación en `develop`**
+5. 🔀 **Fusionar la rama `feature/` en `develop`**
+
+   Una vez aprobado el Pull Request, puedes fusionar la rama `feature/` con `develop` de dos maneras:
+
+   #### ✅ Opción A: Usar GitHub (recomendado)
+   - Ve al Pull Request abierto.
+   - Revisa los cambios y asegúrate de que el destino es `develop`.
+   - Haz clic en **"Merge pull request"**.
+   - Luego elimina la rama si lo deseas, usando el botón "Delete branch".
+
+   #### 🧪 Opción B: Fusión manual con Git
+   Si prefieres hacerlo desde la terminal:
+
+   ```bash
+   git checkout develop
+   git pull origin develop
+   git merge feature/nueva-funcionalidad
+   git push origin develop
+   ```
+
+6. **Pruebas y validación en `develop`**
    - Se ejecutan pruebas y validaciones en la rama `develop`.
    - Si todo funciona correctamente, se procede al despliegue en producción.
 
-6. **Fusionar `develop` en `main` y desplegar**
+7. **Fusionar `develop` en `main` y desplegar**
    - Una vez validados los cambios en `develop`, se fusionan en `main` con:
      ```bash
      git checkout main
@@ -55,7 +75,7 @@ El repositorio utiliza las siguientes ramas principales:
      git push origin main
      ```
 
-7. **Eliminar ramas de características**
+8. **Eliminar ramas de características**
    - Una vez fusionadas en `develop` y en `main`, se pueden eliminar las ramas innecesarias:
      ```bash
      git branch -d feature/nueva-funcionalidad
