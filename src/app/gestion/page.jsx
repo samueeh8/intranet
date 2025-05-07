@@ -22,6 +22,7 @@ export default function GestionPage() {
   const [rangosFechas, setRangosFechas] = useState({});
 
 
+  const camposFechaForzados = ["Fecha_Visado", "Fecha_Inicio"];
   const containerRef = useRef(null);
   const limit = 50;
 
@@ -288,7 +289,7 @@ export default function GestionPage() {
             <div key={key} className="campo-item">
               <label>{obtenerLabelBonito(tableName, campo)}</label>
 
-              {campoPrisma[tableName]?.[campo]?.tipo === "date" ? (
+              {campoPrisma[tableName]?.[campo]?.tipo === "date"  || camposFechaForzados.includes(campo) ? (
                 <CustomDatePicker
                   selected={nuevoRegistro[campo] ? new Date(nuevoRegistro[campo]) : null}
                   onChange={(fechaSeleccionada) =>
@@ -305,7 +306,6 @@ export default function GestionPage() {
                   onChange={(e) =>
                     setNuevoRegistro({ ...nuevoRegistro, [campo]: e.target.value })
                   }
-                  // placeholder={`Introduce ${obtenerLabelBonito(tableName, campo)}`}
                 />
               )}
             </div>
@@ -345,7 +345,7 @@ export default function GestionPage() {
                 <tr key={`row-${index}`}>
                   {showedFields[tableName]?.map(({ campo }) => (
                     <td key={campo}>
-                      {campoPrisma[tableName]?.[campo]?.tipo === "date"
+                      {campoPrisma[tableName]?.[campo]?.tipo === "date" || camposFechaForzados.includes(campo)
                         ? new Date(row[campo]).toLocaleDateString("es-ES")
                         : String(row[campo] ?? "")}
                     </td>
