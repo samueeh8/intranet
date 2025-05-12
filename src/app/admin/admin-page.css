@@ -44,6 +44,7 @@
     background-color: #fff;
     border-radius: 0.5rem 0.5rem 0 0;
     overflow: hidden;
+    border: 1px solid #ddd;
     font-size: 15px;
   }
   
@@ -58,9 +59,6 @@
   .users-table td {
     padding: 1rem;
     text-align: left;
-  }
-
-  .users-table td {
   }
 
   .users-table tbody tr {

@@ -330,33 +330,42 @@ export default function GestionPage() {
       )}
 
 
-      {data.length > 0 &&
-        <div className="gestion-scroll-wrapper" ref={containerRef}> 
-            <table className="users-table">
-              <thead>
-                <tr>
-                  {showedFields[tableName]?.map(({ label }) => (
-                    <th key={label}>{label}</th>
-                  ))}
-                </tr>
-              </thead>
+      {data.length > 0 && (
+        <div className="gestion-scroll-wrapper">
+          {/* Cabecera fija */}
+          <table className="users-table users-table-head">
+            <thead>
+              <tr>
+                {showedFields[tableName]?.map(({ label }) => (
+                  <th key={label}>{label}</th>
+                ))}
+              </tr>
+            </thead>
+          </table>
+
+          {/* Cuerpo scrolleable */}
+          <div className="gestion-table-body-container" ref={containerRef}>
+            <table className="users-table users-table-body">
               <tbody>
                 {data.map((row, index) => (
                   <tr key={`row-${index}`}>
                     {showedFields[tableName]?.map(({ campo }) => (
                       <td key={campo}>
-                        {campoPrisma[tableName]?.[campo]?.tipo === "date" || camposFechaForzados.includes(campo)
-                          ? new Date(row[campo]).toLocaleDateString("es-ES")
-                          : String(row[campo] ?? "")}
+                        <div className="cell-content">
+                          {campoPrisma[tableName]?.[campo]?.tipo === "date" || camposFechaForzados.includes(campo)
+                            ? new Date(row[campo]).toLocaleDateString("es-ES")
+                            : String(row[campo] ?? "")}
+                        </div>
                       </td>
                     ))}
                   </tr>
                 ))}
               </tbody>
             </table>
-          {loading && <p className="loading-msg">Cargando más...</p>}
+            {loading && <p className="loading-msg">Cargando más...</p>}
+          </div>
         </div>
-      }
+      )}
     </div>
   );
 }
