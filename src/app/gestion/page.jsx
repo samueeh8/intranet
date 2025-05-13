@@ -21,10 +21,36 @@ export default function GestionPage() {
   const [nuevoRegistro, setNuevoRegistro] = useState({});
   const [rangosFechas, setRangosFechas] = useState({});
 
+  const headRef = useRef(null);
+  const firstRowRef = useRef(null);
 
   const camposFechaForzados = ["Fecha_Visado", "Fecha_Inicio"];
   const containerRef = useRef(null);
   const limit = 50;
+
+  useEffect(() => {
+    const syncColumnWidths = () => {
+      if (!headRef.current || !firstRowRef.current) return;
+  
+      const headCells = headRef.current.querySelectorAll("th");
+      const bodyCells = firstRowRef.current.querySelectorAll("td");
+  
+      if (headCells.length !== bodyCells.length) return;
+  
+      bodyCells.forEach((cell, index) => {
+        const width = cell.getBoundingClientRect().width + "px";
+        headCells[index].style.width = width;
+      });
+    };
+  
+    // Ejecutar tras render
+    syncColumnWidths();
+  
+    // Re-sincronizar en resize
+    window.addEventListener("resize", syncColumnWidths);
+    return () => window.removeEventListener("resize", syncColumnWidths);
+  }, [data, tableName]);  
+  
 
   useEffect(() => {
     setAvailableTables(["proyectos", "cartas", "clientes"]);
@@ -334,10 +360,12 @@ export default function GestionPage() {
         <div className="gestion-scroll-wrapper">
           {/* Cabecera fija */}
           <table className="users-table users-table-head">
-            <thead>
+            <thead ref={headRef}>
               <tr>
                 {showedFields[tableName]?.map(({ label }) => (
-                  <th key={label}>{label}</th>
+                  <th key={label}>
+                    <div className="cell-content cell-header">{label}</div>
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -348,7 +376,7 @@ export default function GestionPage() {
             <table className="users-table users-table-body">
               <tbody>
                 {data.map((row, index) => (
-                  <tr key={`row-${index}`}>
+                  <tr key={`row-${index}`} ref={index === 0 ? firstRowRef : null}>
                     {showedFields[tableName]?.map(({ campo }) => (
                       <td key={campo}>
                         <div className="cell-content">
