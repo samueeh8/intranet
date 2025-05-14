@@ -50,4 +50,35 @@ export const campoPrisma = {
     Nombre:     { campo: "Nombre", tipo: "string" },
     Nif:        { campo: "Nif", tipo: "string" }
   },
+
+  trabajadores: {
+    id: { campo: "id", tipo: "int" },
+    nombre: { campo: "nombre", tipo: "string" },
+    puesto: { campo: "puesto", tipo: "string" },
+    email: { campo: "email", tipo: "string" },
+  },
+  
+  fotos: {
+    id: { campo: "id", tipo: "int" },
+    descripcion: { campo: "descripcion", tipo: "string" },
+    url: { campo: "url", tipo: "string" },
+  },
+  
+  revistas: {
+    id: { campo: "id", tipo: "int" },
+    titulo: { campo: "titulo", tipo: "string" },
+    fecha: { campo: "fecha", tipo: "date" },
+  },
+  
+  libros: {
+    id: { campo: "id", tipo: "int" },
+    titulo: { campo: "titulo", tipo: "string" },
+    autor: { campo: "autor", tipo: "string" },
+  },
+  
+  Consulta_Archivo_T_cnico: {
+    id: { campo: "id", tipo: "int" },
+    referencia: { campo: "referencia", tipo: "string" },
+    archivo: { campo: "archivo", tipo: "string" },
+  }  
 };

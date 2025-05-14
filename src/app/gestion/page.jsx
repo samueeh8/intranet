@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useSession } from "next-auth/react";
 import { formatLabels } from "@/lib/table-filters";
 import { showedFields } from "@/lib/showed-fields";
 import { campoPrisma } from "@/lib/prisma-mapper";
+import { PERMISSIONS } from "@/lib/permissions";
 import CustomDatePicker from "@/components/DatePicker/CustomDatePicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "./gestion.css";
@@ -23,6 +25,7 @@ export default function GestionPage() {
 
   const headRef = useRef(null);
   const firstRowRef = useRef(null);
+  const { data: session, status } = useSession();
 
   const camposFechaForzados = ["Fecha_Visado", "Fecha_Inicio"];
   const containerRef = useRef(null);
@@ -53,8 +56,30 @@ export default function GestionPage() {
   
 
   useEffect(() => {
-    setAvailableTables(["proyectos", "cartas", "clientes"]);
-  }, []);
+    console.log("SESSION:", session);
+    console.log("STATUS:", status);
+    console.log("PERMISSIONS GLOBALES:", PERMISSIONS);
+  
+    if (status !== "authenticated") return;
+  
+    const rolRaw = session?.user?.role;
+  
+    if (!rolRaw) {
+      console.warn("No se encontró el rol en la sesión.");
+      return;
+    }
+  
+    const rol = rolRaw.toLowerCase();
+    console.log("ROL:", rol);
+  
+    const tables = Object.keys(PERMISSIONS[rol] || {});
+    console.log("TABLAS DISPONIBLES:", tables);
+  
+    setAvailableTables(tables);
+  }, [status, session]);
+  
+  
+  
 
   useEffect(() => {
     const container = containerRef.current;

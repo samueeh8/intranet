@@ -1,33 +1,42 @@
-// src/lib/permissions.js
-
 export const PERMISSIONS = {
-    trabajador: {
-      proyectos: ['read'],
-    },
-    asociado: {
-      proyectos: ['read', 'create', 'update'],
-      clientes: ['read', 'create', 'update'],
-      cartas: ['read', 'create', 'update', 'delete'],
-      proveedores: ['read', 'create', 'update'],
-      contratos: ['read', 'create'],
-    },
-    secretaria: {
-      proyectos: ['read'],
-      clientes: ['read'],
-      cartas: ['read', 'create', 'update', 'delete'],
-      remitentes: ['read'],
-      archivoAdministrativo: ['read'],
-    },
-    administracion: {
-      proyectos: ['read', 'create', 'update'],
-      clientes: ['read', 'create', 'update'],
-      facturas: ['read', 'create', 'update'],
-      contratos: ['read', 'create'],
-      proveedores: ['read', 'create'],
-      cartas: ['read'],
-    },
-    admin: {
-      '*': ['*'], 
-    },
-  };
-  
+  trabajador: {
+    proyectos: ['read'],
+    Consulta_Archivo_T_cnico: ['read'],
+  },
+  asociado: {
+    proyectos: ['read', 'create', 'update'],
+    clientes: ['read', 'create', 'update'],
+    cartas: ['read', 'create', 'update', 'delete'],
+    proveedores: ['read', 'create', 'update'],
+    // contratos: ['read', 'create'],
+    Consulta_Archivo_T_cnico: ['read'],
+    archivoAdministrativo: ['read'],
+  },
+  secretaria: {
+    proyectos: ['read'],
+    clientes: ['read'],
+    cartas: ['read', 'create', 'update', 'delete'],
+    // remitentes: ['read'],
+    archivoAdministrativo: ['read', 'create', 'update'],
+    revistas: ['read'],
+    libros: ['read'],
+    Consulta_Archivo_T_cnico: ['read'],
+  },
+  administracion: {
+    clientes: ['read', 'create', 'update'],
+    // facturas: ['read', 'create', 'update'],
+    // contratos: ['read', 'create', 'update'],
+    proveedores: ['read', 'create'],
+    proyectos: ['read'],
+    cartas: ['read'],
+    archivoAdministrativo: ['read'],
+    trabajadores: ['read'],
+    fotos: ['read'],
+    revistas: ['read'],
+    libros: ['read'],
+    Consulta_Archivo_T_cnico: ['read'],
+  },
+  admin: {
+    '*': ['*'],
+  },
+};

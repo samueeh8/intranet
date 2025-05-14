@@ -47,5 +47,32 @@ export const formatLabels = {
     { name: "Codigo", label: "Código" },
     { name: "Nombre", label: "Nombre" },
     { name: "Nif", label: "NIF" }
+  ],
+
+  trabajadores: [
+    { name: "nombre", label: "Nombre" },
+    { name: "puesto", label: "Puesto" },
+    { name: "email", label: "Email" },
+  ],
+  
+  fotos: [
+    { name: "descripcion", label: "Descripción" },
+    { name: "url", label: "URL" },
+  ],
+  
+  revistas: [
+    { name: "titulo", label: "Título" },
+    { name: "fecha", label: "Fecha" },
+  ],
+  
+  libros: [
+    { name: "titulo", label: "Título" },
+    { name: "autor", label: "Autor" },
+  ],
+  
+  Consulta_Archivo_T_cnico: [
+    { name: "referencia", label: "Referencia" },
+    { name: "archivo", label: "Archivo" },
   ]
+  
 };
