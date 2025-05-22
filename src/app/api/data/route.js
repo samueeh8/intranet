@@ -30,7 +30,20 @@ export async function GET(req) {
     return NextResponse.json({ message: "No autorizado" }, { status: 403 });
   }
 
-  const allowedTables = ["proyectos", "cartas", "clientes"];
+  const allowedTables = [
+    "proyectos", 
+    "cartas", 
+    "clientes", 
+    "proveedores", 
+    "Trabajadores",
+    "Proveedores",
+    "registro_fotos",
+    "registro_revista",
+    "registro_libros",
+    "Consulta_Archivo_T_cnico",
+    "archivoAdministrativo"
+  ];
+  
   if (!allowedTables.includes(table)) {
     return NextResponse.json({ message: "Tabla no permitida" }, { status: 400 });
   }

@@ -37,6 +37,16 @@ export const PERMISSIONS = {
     Consulta_Archivo_T_cnico: ['read'],
   },
   admin: {
-    '*': ['*'],
+    proyectos: ['read', 'create', 'update', 'delete'],
+    clientes: ['read', 'create', 'update', 'delete'],
+    cartas: ['read', 'create', 'update', 'delete'],
+    proveedores: ['read', 'create', 'update', 'delete'],
+    archivoAdministrativo: ['read', 'create', 'update', 'delete'],
+    trabajadores: ['read', 'create', 'update', 'delete'],
+    fotos: ['read', 'create', 'update', 'delete'],
+    revistas: ['read', 'create', 'update', 'delete'],
+    libros: ['read', 'create', 'update', 'delete'],
+    Consulta_Archivo_T_cnico: ['read', 'create', 'update', 'delete']
+
   },
 };
